@@ -58,6 +58,7 @@ section { padding: 56px 0 8px; scroll-margin-top: 56px }
 .cifras b { display: block; font-size: 30px; line-height: 1.1; color: var(--accent) }
 .cifras span { color: var(--muted); font-size: 14px }
 .fuente { color: var(--muted); font-size: 13px; margin: 10px 0 0 }
+.empresas { margin: 16px 0 0; font-size: 15px; color: var(--muted); max-width: 90ch } .empresas b { color: var(--ink) }
 dl.ficha { display: grid; grid-template-columns: max-content 1fr; gap: 10px 20px; margin: 0 0 22px; background: var(--surface);
   border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; max-width: 760px }
 dl.ficha dt { font-weight: 700 } dl.ficha dd { margin: 0; color: var(--muted) }
@@ -146,6 +147,8 @@ footer { margin: 64px 0 40px; color: var(--muted); font-size: 13px; border-top: 
       <li><b>Test Lead</b><span>de un equipo de QA que ayudé a crear</span></li>
       <li><b>90%</b><span>de los casos con trazabilidad en Azure DevOps</span></li>
     </ul>
+    <p class="empresas" data-testid="empresas"><b>Dónde he probado software:</b> Grupo BECM · Hiberus (ALSEA, Domino's) · Femsa Digital (Spin) ·
+      ION Financiera · Capgemini (AXA Seguros) · Softtek (BBVA) · BW Meill · PRAXIS (HSBC) · Microsiga ERP · T-Systems (COMEX)</p>
     <p class="fuente">Todo sale de mi CV, que puedes descargar abajo.</p>
   </section>
 
@@ -176,8 +179,8 @@ footer { margin: 64px 0 40px; color: var(--muted); font-size: 13px; border-top: 
       </article>
       <article class="card">
         <h3>Historias de usuario desde cero</h3>
-        <p>De lo que dice el negocio a historias con criterios de aceptación verificables, supuestos explícitos y preguntas
-          con dueño. Un prototipo navegable para descubrir antes de construir.</p>
+        <p>De lo que dice el negocio a historias en Jira con criterios de aceptación verificables, supuestos explícitos y
+          preguntas con dueño. Un prototipo navegable para descubrir antes de construir.</p>
         <p class="prueba">Mira <a href="#como-trabajo">el ciclo completo</a></p>
       </article>
     </div>
@@ -205,10 +208,10 @@ footer { margin: 64px 0 40px; color: var(--muted); font-size: 13px; border-top: 
         <li><b>Dos entradas.</b> Una iniciativa nueva, sin BRD ni diseño, o un BRD que llega de Negocio.</li>
         <li><b>Descubrimiento.</b> Producto y stack: qué problema resolvemos y con qué.</li>
         <li><b>Demo navegable.</b> Negocio valida el alcance antes de que se escriba código.</li>
-        <li><b>Historias.</b> Historias de usuario con reglas y criterios de aceptación, listas para el backlog.</li>
+        <li><b>Historias.</b> Historias de usuario con reglas y criterios de aceptación, cargadas en Jira.</li>
         <li><b>Desarrollo.</b> Lo construye el equipo de desarrollo.</li>
         <li><b>Pruebas con evidencia.</b> Cada prueba deja evidencia; una mejora detectada vuelve como historia nueva.</li>
-        <li><b>Entrega.</b> Con el backlog y las historias al día.</li>
+        <li><b>Entrega.</b> Con Jira y las historias al día.</li>
         <li><b>Aprendizaje.</b> Cada error se convierte en una regla, y el ciclo vuelve a empezar.</li>
       </ol>
     </div>
@@ -234,7 +237,7 @@ footer { margin: 64px 0 40px; color: var(--muted); font-size: 13px; border-top: 
     <dl class="ficha">
       <dt>Roles</dt><dd data-testid="roles">QA Lead, QA Automation, QA Funcional, Product Owner</dd>
       <dt>Stack</dt><dd>Playwright con TypeScript, Python con pytest, Cypress, Postman/Newman, OWASP ZAP, SQL (Oracle y SQL Server),
-        Xray, Azure DevOps, Git, Firebase, Datadog, SauceLabs, Claude Code con MCP</dd>
+        Jira con Xray, Azure DevOps, Git, Firebase, Datadog, SauceLabs, Claude Code con MCP</dd>
       <dt>Pruebas</dt><dd>Web y móvil (Android/iOS), APIs REST y SOAP, BDD/Gherkin, ISTQB, pruebas basadas en riesgo, regresión y gates en CI</dd>
       <dt>Idiomas</dt><dd>Español (nativo), inglés (B2)</dd>
       <dt>Ubicación</dt><dd>Ciudad de México: remoto o híbrido en CDMX y Edomex</dd>
