@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Cómo trabajo con IA · animación fuente</title>
+<!-- Fuente de la animación «Cómo trabajo con IA». De aquí salen ecosistema.mp4/.webm/.gif con herramientas/render_animacion.js.
+     Todo es genérico o ficticio: nombres de agentes, veredicto, encargo y pruebas son de ejemplo. -->
+<style>
+  html, body { margin: 0; background: #F4F5F7 }
+  svg { display: block; width: 100vw; height: auto; max-width: 960px; margin: 0 auto }
+  text { font-family: system-ui, "Segoe UI", Roboto, sans-serif }
+</style>
+</head>
+<body>
+<svg id="esc" viewBox="0 0 960 540" role="img" aria-labelledby="t d">
+  <title id="t">Cómo trabajo con IA</title>
+  <desc id="d">Saúl pide algo; un agente crítico lo filtra y emite un veredicto; el veredicto se vuelve un encargo escrito para un agente
+    hijo; el hijo trabaja detrás de reglas en código; lo irreversible espera la aprobación de Saúl; el crítico verifica corriendo las
+    pruebas y registra el resultado en el índice.</desc>
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#16191F" flood-opacity=".12"/></filter>
+    <marker id="punta" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#9AA2B1"/></marker>
+  </defs>
+  <rect width="960" height="540" fill="#F4F5F7"/>
+  <text x="40" y="52" font-size="26" font-weight="700" fill="#16191F">Cómo trabajo con IA</text>
+  <text x="40" y="80" font-size="15" fill="#5A6170">No «uso IA»: la gobierno. Cada paso deja evidencia y tiene dueño.</text>
+
+  <!-- Flechas fijas -->
+  <g stroke="#C9CDD5" stroke-width="2" fill="none" marker-end="url(#punta)">
+    <path d="M196 200 H 330"/>
+    <path d="M480 245 V 300"/>
+    <path d="M480 245 C 480 280, 250 270, 200 300"/>
+    <path d="M480 245 C 480 280, 710 270, 760 300"/>
+  </g>
+
+  <!-- Saúl -->
+  <g id="saul" filter="url(#sombra)">
+    <rect x="40" y="160" width="156" height="80" rx="14" fill="#FFFFFF" stroke="#DADDE3"/>
+    <circle cx="76" cy="200" r="18" fill="#E3EFEA"/><text x="76" y="206" font-size="16" text-anchor="middle" fill="#2F5D50" font-weight="700">S</text>
+    <text x="104" y="196" font-size="16" font-weight="700" fill="#16191F">Saúl</text>
+    <text x="104" y="216" font-size="12.5" fill="#5A6170">decide</text>
+  </g>
+
+  <!-- Agente crítico (padre) -->
+  <g id="padre" filter="url(#sombra)">
+    <rect id="padre-caja" x="334" y="155" width="292" height="90" rx="14" fill="#FFFFFF" stroke="#DADDE3" stroke-width="1.5"/>
+    <text x="356" y="190" font-size="16" font-weight="700" fill="#16191F">Agente crítico</text>
+    <text x="356" y="212" font-size="12.5" fill="#5A6170">filtra la idea contra evidencia,</text>
+    <text x="356" y="229" font-size="12.5" fill="#5A6170">emite un veredicto y verifica</text>
+  </g>
+
+  <!-- Hijos -->
+  <g filter="url(#sombra)">
+    <g id="hijo-0"><rect x="110" y="302" width="200" height="66" rx="12" fill="#FFFFFF" stroke="#DADDE3"/>
+      <text x="130" y="331" font-size="15" font-weight="700" fill="#16191F">Agente de skills</text><text x="130" y="351" font-size="12.5" fill="#5A6170">construye habilidades</text></g>
+    <g id="hijo-1"><rect id="hijo-1-caja" x="380" y="302" width="200" height="66" rx="12" fill="#FFFFFF" stroke="#DADDE3"/>
+      <text x="400" y="331" font-size="15" font-weight="700" fill="#16191F">Agente de apps</text><text x="400" y="351" font-size="12.5" fill="#5A6170">construye aplicaciones</text></g>
+    <g id="hijo-2"><rect x="650" y="302" width="200" height="66" rx="12" fill="#FFFFFF" stroke="#DADDE3"/>
+      <text x="670" y="331" font-size="15" font-weight="700" fill="#16191F">Agente de QA</text><text x="670" y="351" font-size="12.5" fill="#5A6170">prueba y reporta</text></g>
+  </g>
+
+  <!-- Pedido que viaja de Saúl al crítico -->
+  <g id="pedido"><rect x="-90" y="-16" width="180" height="32" rx="8" fill="#16191F"/>
+    <text x="0" y="5" font-size="13" text-anchor="middle" fill="#FFFFFF">«Quiero un portal de pruebas»</text></g>
+
+  <!-- Veredicto -->
+  <g id="veredicto"><rect x="640" y="160" width="290" height="40" rx="10" fill="#E3EFEA" stroke="#2F5D50"/>
+    <text x="656" y="185" font-size="14" font-weight="700" fill="#2F5D50">Veredicto V-012 · aprobar con ajuste</text></g>
+
+  <!-- Encargo (documento) que baja al hijo -->
+  <g id="encargo"><rect x="-58" y="-34" width="116" height="68" rx="8" fill="#FFFFFF" stroke="#2F5D50" stroke-width="1.5"/>
+    <text x="0" y="-12" font-size="13" font-weight="700" text-anchor="middle" fill="#2F5D50">Encargo v0.1</text>
+    <rect x="-40" y="-2" width="80" height="4" rx="2" fill="#DADDE3"/><rect x="-40" y="8" width="64" height="4" rx="2" fill="#DADDE3"/>
+    <rect x="-40" y="18" width="72" height="4" rx="2" fill="#DADDE3"/></g>
+
+  <!-- Trabajo del hijo y gates -->
+  <g id="progreso"><rect x="380" y="380" width="200" height="8" rx="4" fill="#DADDE3"/><rect id="barra" x="380" y="380" width="0" height="8" rx="4" fill="#2F5D50"/></g>
+  <g font-size="13.5">
+    <g id="gate-0"><rect x="300" y="404" width="360" height="30" rx="8" fill="#FFFFFF" stroke="#DADDE3"/>
+      <text x="316" y="424" fill="#16191F">Regla en código: solo lectura en producción</text><text x="640" y="424" text-anchor="end" fill="#2F5D50" font-weight="700">✓</text></g>
+    <g id="gate-1"><rect x="300" y="440" width="360" height="30" rx="8" fill="#FFFFFF" stroke="#DADDE3"/>
+      <text x="316" y="460" fill="#16191F">Regla en código: ningún secreto en el repo</text><text x="640" y="460" text-anchor="end" fill="#2F5D50" font-weight="700">✓</text></g>
+    <g id="gate-2"><rect id="gate-2-caja" x="300" y="476" width="360" height="30" rx="8" fill="#FCEFD9" stroke="#C98A1B"/>
+      <text id="gate-2-texto" x="316" y="496" fill="#7A4A00">Publicar es irreversible: espera a Saúl</text>
+      <text id="gate-2-ok" x="640" y="496" text-anchor="end" fill="#2F5D50" font-weight="700">Aprobado ✓</text></g>
+  </g>
+
+  <!-- Verificación y registro -->
+  <g id="verifica"><rect x="680" y="400" width="240" height="40" rx="10" fill="#16191F"/>
+    <text x="800" y="425" font-size="14" text-anchor="middle" fill="#FFFFFF">El crítico corre las pruebas: 14/14 ✓</text></g>
+  <g id="indice"><rect x="680" y="448" width="240" height="58" rx="10" fill="#FFFFFF" stroke="#DADDE3"/>
+    <text x="696" y="470" font-size="12" font-weight="700" fill="#5A6170">ÍNDICE</text>
+    <text x="696" y="492" font-size="13" fill="#16191F">portal de pruebas · entregado · dueño</text></g>
+
+  <!-- Paso actual -->
+  <g id="paso"><rect x="40" y="404" width="236" height="102" rx="12" fill="#2F5D50"/>
+    <text id="paso-n" x="58" y="432" font-size="12.5" font-weight="700" fill="#BFE0D4">PASO 1 DE 5</text>
+    <text id="paso-1" x="58" y="458" font-size="15" font-weight="700" fill="#FFFFFF"></text>
+    <text id="paso-2" x="58" y="480" font-size="15" font-weight="700" fill="#FFFFFF"></text></g>
+
+  <text id="lema" x="480" y="140" font-size="17" font-weight="700" text-anchor="middle" fill="#2F5D50">Nada sin dueño, nada sin evidencia.</text>
+</svg>
+<script>
+// Línea de tiempo determinista: render(t) dibuja el instante t (segundos). En vivo corre en bucle;
+// el script de render la llama fotograma por fotograma para producir el video y el GIF.
+const DURACION = 26;
+const PASOS = [
+  [0, 'Saúl pide algo.', ''],
+  [3.5, 'Un agente crítico lo filtra', 'y emite un veredicto.'],
+  [8, 'El veredicto se vuelve un', 'encargo escrito para un hijo.'],
+  [11.5, 'El hijo trabaja; las reglas', 'en código deciden qué corre.'],
+  [18, 'El crítico verifica él mismo', 'y lo registra en el índice.']
+];
+const $ = (id) => document.getElementById(id);
+const lim = (x) => Math.max(0, Math.min(1, x));
+const rampa = (t, a, b) => lim((t - a) / (b - a));
+const suave = (x) => x * x * (3 - 2 * x);
+const entra = (t, a, d = 0.5) => suave(rampa(t, a, a + d));
+const op = (id, v) => $(id).setAttribute('opacity', v.toFixed(3));
+const mueve = (id, x, y, s = 1) => $(id).setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${s.toFixed(3)})`);
+
+function render(t) {
+  t = ((t % DURACION) + DURACION) % DURACION;
+  const salida = 1 - entra(t, DURACION - 0.8, 0.8);          // todo se desvanece al final para el bucle
+
+  // 1. Pedido: aparece junto a Saúl y viaja al crítico
+  const viaje = suave(rampa(t, 1.3, 3.3));
+  mueve('pedido', 118 + viaje * 362, 128 - viaje * 0 + Math.sin(viaje * Math.PI) * -18, 1);
+  op('pedido', entra(t, 0.4) * (1 - entra(t, 3.4, 0.4)));
+  $('saul').querySelector('rect').setAttribute('stroke', t < 3.4 ? '#2F5D50' : '#DADDE3');
+
+  // 2. El crítico se activa y emite el veredicto
+  const activo = (t > 3.4 && t < 8.4) || (t > 18 && t < DURACION - 0.8);
+  $('padre-caja').setAttribute('stroke', activo ? '#2F5D50' : '#DADDE3');
+  $('padre-caja').setAttribute('stroke-width', activo ? 3 : 1.5);
+  const sello = entra(t, 5, 0.35);
+  op('veredicto', sello * salida);
+  mueve('veredicto', 0, 0, 1);
+  $('veredicto').setAttribute('transform', `translate(785 180) scale(${(1.25 - 0.25 * sello).toFixed(3)}) translate(-785 -180)`);
+
+  // 3. Encargo: nace del crítico y baja al agente de apps
+  const baja = suave(rampa(t, 8.6, 10.4));
+  op('encargo', entra(t, 8.2) * (1 - entra(t, 10.6, 0.4)));
+  mueve('encargo', 480, 205 + baja * 130, 1 - baja * 0.25);
+  ['hijo-0', 'hijo-2'].forEach((h) => op(h, 1 - 0.55 * entra(t, 9.5) * (1 - entra(t, 18, 0.5))));
+  $('hijo-1-caja').setAttribute('stroke', t > 10.4 && t < 18 ? '#2F5D50' : '#DADDE3');
+  $('hijo-1-caja').setAttribute('stroke-width', t > 10.4 && t < 18 ? 3 : 1);
+
+  // 4. Trabajo y gates
+  $('barra').setAttribute('width', (200 * suave(rampa(t, 11, 17))).toFixed(1));
+  op('progreso', entra(t, 10.8) * salida);
+  op('gate-0', entra(t, 12.2) * salida);
+  op('gate-1', entra(t, 13.4) * salida);
+  op('gate-2', entra(t, 14.6) * salida);
+  const aprobado = t > 16.4;
+  $('gate-2-caja').setAttribute('fill', aprobado ? '#E3EFEA' : '#FCEFD9');
+  $('gate-2-caja').setAttribute('stroke', aprobado ? '#2F5D50' : '#C98A1B');
+  $('gate-2-texto').setAttribute('fill', aprobado ? '#16191F' : '#7A4A00');
+  $('gate-2-texto').textContent = aprobado ? 'Publicar es irreversible: Saúl aprobó' : 'Publicar es irreversible: espera a Saúl';
+  op('gate-2-ok', entra(t, 16.4, 0.3));
+  $('saul').querySelector('rect').setAttribute('stroke', (t < 3.4 || (t > 15.4 && t < 17)) ? '#2F5D50' : '#DADDE3');
+
+  // 5. Verificación y registro
+  op('verifica', entra(t, 18.6) * salida);
+  op('indice', entra(t, 20.4) * salida);
+  op('lema', entra(t, 22) * salida);
+
+  // Texto del paso
+  let i = 0;
+  PASOS.forEach((p, k) => { if (t >= p[0]) i = k; });
+  $('paso-n').textContent = `PASO ${i + 1} DE ${PASOS.length}`;
+  $('paso-1').textContent = PASOS[i][1];
+  $('paso-2').textContent = PASOS[i][2];
+  op('paso', salida * entra(t, 0, 0.3) + (t < 0.3 ? 0 : 0));
+}
+
+window.__animacion = { render, DURACION, PASOS };
+if (!new URLSearchParams(location.search).has('quieto')) {
+  const t0 = performance.now();
+  const ciclo = (ahora) => { render((ahora - t0) / 1000); requestAnimationFrame(ciclo); };
+  requestAnimationFrame(ciclo);
+} else render(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Caso de estudio · Campañas publicitarias para apps</title>
+<style>
+:root { --bg: #F4F5F7; --surface: #FFFFFF; --ink: #16191F; --muted: #5A6170; --line: #DADDE3; --accent: #2F5D50; --accent-soft: #E3EFEA;
+  --warn-soft: #FCEFD9; --warn: #7A4A00; --f: system-ui, "Segoe UI", Roboto, sans-serif; --mono: ui-monospace, Consolas, monospace; color-scheme: light dark }
+@media (prefers-color-scheme: dark) { :root { --bg: #111317; --surface: #1A1D23; --ink: #E7EAF0; --muted: #9AA2B1; --line: #2C313A;
+  --accent: #7CC4AE; --accent-soft: #1E2E29; --warn-soft: #3A2C14; --warn: #F0B65A } }
+* { box-sizing: border-box }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 var(--f) }
+main { max-width: 860px; margin: 0 auto; padding: 40px 20px 80px }
+nav.top { font-size: 14px; margin-bottom: 28px }
+a { color: var(--accent); font-weight: 600 }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+h1 { font-size: clamp(28px, 5vw, 38px); line-height: 1.12; margin: 0 0 10px; text-wrap: balance }
+h2 { font-size: 23px; margin: 48px 0 12px; text-wrap: balance }
+h3 { font-size: 17px; margin: 26px 0 8px }
+p, li { max-width: 72ch }
+.lead { color: var(--muted); font-size: 17px }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 8px }
+.meta span { background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 3px 12px; font-size: 13px; font-weight: 600 }
+.cta { display: inline-block; margin-top: 10px; background: var(--accent); color: var(--surface); padding: 10px 18px; border-radius: 10px; text-decoration: none }
+.box { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 22px; margin: 16px 0 }
+.note { background: var(--warn-soft); border-radius: 12px; padding: 12px 16px; color: var(--ink); font-size: 15px }
+.note b { color: var(--warn) }
+.tw { overflow-x: auto; margin: 14px 0 }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--line) }
+th { background: var(--accent-soft); font-size: 13px; text-transform: uppercase; letter-spacing: .03em }
+tr:last-child td { border-bottom: 0 }
+code, .id { font-family: var(--mono); font-size: .9em }
+.id { white-space: nowrap; color: var(--accent); font-weight: 600 }
+s { color: var(--muted) }
+blockquote { margin: 12px 0; padding: 10px 16px; border-left: 4px solid var(--accent); background: var(--surface); border-radius: 0 10px 10px 0; color: var(--muted); font-style: italic }
+pre { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; overflow-x: auto; font: 13.5px/1.5 var(--mono) }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 4px 20px; margin: 14px 0 }
+summary { cursor: pointer; font-weight: 700; padding: 12px 0 }
+.hu h4 { margin: 18px 0 6px; font-size: 15px }
+.hu .ca { margin: 8px 0; padding-left: 12px; border-left: 3px solid var(--line) }
+.hu .ca b:first-child { display: block }
+.hu ul { padding-left: 20px }
+footer { margin-top: 56px; color: var(--muted); font-size: 13px }
+</style>
+</head>
+<body>
+<main>
+<nav class="top"><a href="../index.html">← Portafolio</a></nav>
+
+<h1>Campañas publicitarias para apps</h1>
+<p class="lead">Caso de estudio como Product Owner: de una necesidad dictada en conversación a 16 historias de usuario
+  trazables y un prototipo navegable que sirvió para descubrir las reglas que faltaban.</p>
+<div class="meta"><span>Product Owner</span><span>Descubrimiento</span><span>Historias de usuario</span><span>Prototipo</span><span>Plan de pruebas</span></div>
+<a class="cta" href="demo.html">Abrir el demo</a>
+
+<div class="note" style="margin-top:22px"><b>Nota:</b> el caso es real en método y alcance; empresa, apps, segmentos,
+  promociones y datos son ficticios. La iniciativa quedó en <b>historias en borrador y prototipo</b>: no llegó a producción.</div>
+
+<h2>1. El problema</h2>
+<p><b>Brío Café</b> tiene tres apps, que son sus líneas de negocio: <b>Cafetería</b>, <b>Express</b> (pedidos para recoger)
+  y <b>Corporativo</b> (empresas con convenio). Mercadotecnia quería mostrar promociones dentro de las apps sin depender de
+  una nueva versión en las tiendas cada vez: subir un banner, decir a qué app va, cuándo y cuántas veces lo ve el usuario, y
+  saber cuál funcionó.</p>
+<p>No había documento de requerimientos. Lo que había era el responsable de negocio explicando la idea en una
+  conversación, con dudas abiertas («no sé cómo llamarle») y cambios sobre la marcha.</p>
+
+<h2>2. Cómo trabajé</h2>
+<p>Cuatro artefactos, cada uno con un solo trabajo:</p>
+<div class="tw"><table>
+  <thead><tr><th>Artefacto</th><th>Qué guarda</th><th>Regla que lo mantiene honesto</th></tr></thead>
+  <tbody>
+    <tr><td><b>Fuente</b></td><td>Lo que dijo negocio, <b>literal</b>, numerado por mensaje (<code>M1</code>…<code>M87</code>), con la pregunta que contestaba cada uno</td><td>No se corrige ni se resume: es la evidencia</td></tr>
+    <tr><td><b>Registro de decisiones</b></td><td>Cada decisión con su ID, fecha, mensaje de origen y a qué decisión anterior <b>sustituye</b></td><td>Lo posterior sustituye a lo anterior, pero lo anterior no se borra</td></tr>
+    <tr><td><b>Extracción</b></td><td>Cada regla suelta (<code>C-1</code>, <code>A-9</code>, <code>X-16</code>…) con su fuente</td><td>Una regla sin fuente no entra a una historia</td></tr>
+    <tr><td><b>Historias de usuario</b></td><td>Como / Quiero / Para, criterios Given-When-Then y reglas de negocio numeradas</td><td>Cada criterio cita las reglas que prueba; lo que falta va como <code>POR_DEFINIR</code>, no se inventa</td></tr>
+  </tbody>
+</table></div>
+
+<h3>Ejemplo de trazabilidad</h3>
+<p>Así se ve el camino de una idea dictada hasta la historia que la contiene:</p>
+<blockquote>«…si yo digo que solo hoy aplica esa campaña, y ya son las 12:35 pm, entonces toma la hora del momento y la campaña dura hasta las 23:59 del día de hoy» — <code>M4</code></blockquote>
+<pre>M4, M5, M6       →  A-9   La vigencia de hoy corre desde la hora en que se asigna; termina a las 23:59
+M47              →  A-9   (corregida) …desde la hora en que se CREA la campaña
+A-7 · A-8 · A-9  →  US-CAMP-004  Vigencia de la campaña  →  CA-004, RN-03, RN-04</pre>
+
+<h2>3. Los requisitos cambiaron, y el registro lo absorbió</h2>
+<p>En dos días hubo 30 decisiones. Varias deshacían otras. Sin el registro, las historias habrían mezclado versiones de la
+  misma regla. Algunos cambios:</p>
+<div class="tw"><table>
+  <thead><tr><th>Decisión</th><th>Antes</th><th>Después</th><th>Qué provocó</th></tr></thead>
+  <tbody>
+    <tr><td class="id">DE-CAMP-008</td><td>Una pantalla dentro del back-office existente</td><td>Un <b>micrositio independiente</b> con acceso por cuenta de Google</td><td>Historia nueva de acceso por dominio (<code>US-CAMP-014</code>)</td></tr>
+    <tr><td class="id">DE-CAMP-009</td><td>Las fechas se capturan al asignar, por línea</td><td>La vigencia es <b>de la campaña</b> y es la misma en todas las líneas</td><td>Se reescribió <code>A-5</code>; <code>A-13</code> quedó sustituida</td></tr>
+    <tr><td class="id">DE-CAMP-010</td><td>Máximo <s>5</s> campañas por línea</td><td>Máximo <b>10</b> por línea y por segmento</td><td>Cambian criterios de <code>US-CAMP-005</code> y del demo</td></tr>
+    <tr><td class="id">DE-CAMP-013</td><td>Catálogos de líneas y categorías editables</td><td>Fijos en esta fase; administración en <b>fase 2</b></td><td>Una historia salió del lote</td></tr>
+    <tr><td class="id">DE-CAMP-028</td><td>Tope por línea</td><td>Tope <b>por usuario</b>: en Corporativo cuentan juntas «Todos» y su empresa</td><td>Caso de frontera nuevo en el plan de pruebas</td></tr>
+  </tbody>
+</table></div>
+
+<h2>4. El prototipo como herramienta de descubrimiento</h2>
+<p>Con las primeras historias armé un <a href="demo.html">demo navegable</a> en un solo archivo: el micrositio a la izquierda
+  y un teléfono simulado a la derecha, con un botón para <b>avanzar el día</b> y ver vencer campañas. Negocio lo revisó en
+  vivo y eso generó 40 mensajes más (<code>M48</code>…<code>M87</code>): editar campaña, segmentos por empresa, un dashboard
+  con más y menos vistos, búsqueda sin Enter, skeletons en lugar de loaders, el carrusel tope 5 dentro de la app.</p>
+<p>Lo que yo agregué al demo <b>sin que negocio lo dictara</b> quedó rotulado aparte (<code>S-1</code>…<code>S-7</code>) y
+  no entró a ninguna historia hasta tener su visto bueno. Se aprobaron cuatro y se descartaron tres. Un prototipo sin
+  rótulos se lee como contrato, y este no debía decidir reglas por su cuenta.</p>
+<p>La última pasada fue al revés: <b>cuadrar el demo con las historias</b>. Lo que el demo hacía y ninguna historia decía
+  (título obligatorio, fin no antes del inicio, una campaña vencida no se asigna, refrescar no cuenta como inicio de sesión)
+  se convirtió en reglas escritas (<code>DE-CAMP-029</code>).</p>
+
+<h2>5. Corte en historias</h2>
+<p>16 historias en dos frentes. El portal primero y las apps después, porque las apps solo consumen lo que el portal publica.</p>
+<div class="tw"><table>
+  <thead><tr><th>Micrositio (11)</th><th>Apps (5)</th></tr></thead>
+  <tbody><tr>
+    <td><span class="id">014</span> Entrar al micrositio<br><span class="id">001</span> Crear campaña<br><span class="id">002</span> Activar, desactivar y borrar<br>
+      <span class="id">015</span> Editar campaña<br><span class="id">003</span> Asignar a líneas de negocio<br><span class="id">017</span> Quitar de una línea<br>
+      <span class="id">004</span> Vigencia de la campaña<br><span class="id">005</span> Máximo 10 por línea y segmento, y sustitución<br>
+      <span class="id">006</span> Publicar a las apps<br><span class="id">007</span> Dashboard<br><span class="id">016</span> Filtros y búsqueda del Dashboard</td>
+    <td><span class="id">008</span> Push de campañas y refresco<br><span class="id">009</span> Carrusel al entrar<br><span class="id">010</span> Pantalla Campañas<br>
+      <span class="id">011</span> Avisos de retirada y por vencer<br><span class="id">012</span> Registro de visualizaciones</td>
+  </tr></tbody>
+</table></div>
+<p>Tres de ellas completas, como quedaron:</p>
+
+<details class="hu">
+<summary>US-CAMP-004 — Vigencia de la campaña</summary>
+<p><b>Como</b> usuario del micrositio de campañas <b>quiero</b> definir la fecha de inicio y de fin al crear la campaña
+  <b>para</b> que se muestre solo durante su vigencia.</p>
+<p><b>Origen:</b> <code>A-7</code>, <code>A-8</code>, <code>A-9</code>, <code>C-6</code> · <code>M1</code>, <code>M4</code>, <code>M5</code>, <code>M46</code>, <code>M47</code></p>
+<h4>Criterios de aceptación</h4>
+<div class="ca"><b>CA-001: La duración se calcula sola</b>Given una fecha de inicio y una de fin capturadas · When el usuario termina de capturarlas · Then el portal muestra la duración en días naturales (RN-01)</div>
+<div class="ca"><b>CA-002: Inicio y fin el mismo día</b>Given la creación de una campaña · When captura la misma fecha como inicio y fin · Then el portal la acepta (RN-02)</div>
+<div class="ca"><b>CA-003: Fecha anterior a hoy</b>Given la creación de una campaña · When intenta elegir una fecha anterior a la actual · Then el portal no la permite (RN-02)</div>
+<div class="ca"><b>CA-004: Campaña que empieza hoy</b>Given una campaña con inicio hoy · When la crea a las 12:35 p. m. · Then la vigencia cuenta desde las 12:35 p. m. y termina a las 23:59 del día de fin (RN-03, RN-04)</div>
+<div class="ca"><b>CA-005: Campaña que empieza otro día</b>Given una campaña con inicio futuro · When la crea · Then la vigencia cuenta desde las 00:00 del día de inicio y termina a las 23:59 del día de fin (RN-04)</div>
+<h4>Reglas de negocio</h4>
+<ul>
+  <li><b>RN-01:</b> Al crear se capturan «Inicio» y «Fin»; la duración en días naturales la calcula el portal.</li>
+  <li><b>RN-02:</b> No se aceptan fechas anteriores a hoy; inicio y fin pueden ser el mismo día; el fin no puede ser antes del inicio.</li>
+  <li><b>RN-03:</b> Si el inicio es hoy, la vigencia cuenta desde la hora en que se <b>crea</b> la campaña, aunque se asigne o publique después.</li>
+  <li><b>RN-04:</b> Termina a las 23:59 del día de fin, hora local. Con inicio futuro, arranca a las 00:00.</li>
+  <li><b>RN-05:</b> La vigencia es de la campaña: es la misma en todas las líneas donde se asigne.</li>
+  <li><b>RN-06:</b> Un cambio de vigencia llega a las apps al publicar.</li>
+</ul>
+</details>
+
+<details class="hu">
+<summary>US-CAMP-005 — Máximo 10 campañas por línea y segmento, y sustitución</summary>
+<p><b>Como</b> usuario del micrositio <b>quiero</b> que el portal no deje pasar de 10 campañas por línea ni por segmento, y me
+  deje programar a cuál sustituye una nueva, <b>para</b> que ningún usuario vea más de 10 a la vez y las futuras no choquen con las vigentes.</p>
+<p><b>Origen:</b> <code>A-4</code>, <code>A-10</code> · <code>DE-CAMP-010</code>, <code>014</code>, <code>016</code>, <code>028</code></p>
+<h4>Criterios de aceptación</h4>
+<div class="ca"><b>CA-001: Asignar con lugar disponible</b>Given una línea o segmento con menos de 10 · When le asigna otra · Then el portal la asigna (RN-01)</div>
+<div class="ca"><b>CA-002: La número 11 empieza hoy</b>Given una línea o segmento con 10 · When intenta asignar otra con inicio hoy · Then el portal informa que no se pueden aplicar más de 10 y no la asigna (RN-02)</div>
+<div class="ca"><b>CA-003: Campaña futura en una línea llena</b>Given una línea o segmento con 10 · When programa una campaña a futuro · Then el portal le pide elegir a cuál sustituye, mostrando la vigencia de cada una (RN-02, RN-03)</div>
+<div class="ca"><b>CA-004: La sustituta conserva sus fechas</b>Given eligió la campaña a sustituir · When confirma · Then la nueva queda programada con su propia vigencia (RN-04)</div>
+<div class="ca"><b>CA-005: Empalme</b>Given la sustituta empieza antes de que venza la sustituida · When confirma · Then el portal avisa que por N días se mostrarían 11 y el usuario decide si lo permite (RN-05)</div>
+<h4>Reglas de negocio</h4>
+<ul>
+  <li><b>RN-01:</b> Cada usuario ve máximo 10 en su línea. En Corporativo cuentan <b>juntas</b> las asignadas a «Todos los usuarios» y las de su empresa («Oficinas Alfa», «Oficinas Beta»). Cuentan también las de inicio futuro.</li>
+  <li><b>RN-02:</b> Al intentar la número 11: «No se pueden aplicar más de 10 campañas». Si empieza hoy, solo avisa.</li>
+  <li><b>RN-03:</b> Con la línea llena y campaña futura, primero se elige a cuál sustituye; en la sustitución no se capturan fechas.</li>
+  <li><b>RN-04:</b> La sustituta conserva su propia vigencia.</li>
+  <li><b>RN-05:</b> «Durante N días se mostrarán 11 campañas a la vez. ¿Lo permites?», con «No» y «Permitir».</li>
+</ul>
+</details>
+
+<details class="hu">
+<summary>US-CAMP-009 — Carrusel de campañas al entrar (app)</summary>
+<p><b>Como</b> usuario de la app <b>quiero</b> ver al entrar un carrusel con las campañas de mi línea <b>para</b> conocer las promociones vigentes.</p>
+<p><b>Origen:</b> <code>X-4</code>…<code>X-8</code>, <code>X-16</code>, <code>A-6</code> · <code>DE-CAMP-018</code>, <code>024</code>, <code>025</code></p>
+<h4>Criterios de aceptación</h4>
+<div class="ca"><b>CA-001: Aparece al entrar</b>Given campañas vigentes que le tocan por frecuencia · When inicia sesión · Then ve el carrusel encima de todo, con banner y título, en el orden del portal (RN-01…RN-03)</div>
+<div class="ca"><b>CA-002: Avance automático</b>Given 2 o más banners · When pasan 4 segundos · Then avanza al siguiente, y también se puede deslizar (RN-04)</div>
+<div class="ca"><b>CA-003: Un solo banner</b>Given un solo banner · When el usuario lo ve · Then se queda fijo hasta que sale (RN-04)</div>
+<div class="ca"><b>CA-004/005: Agrandar y cerrar</b>Given el carrusel · When toca un banner y luego lo cierra · Then se agranda como tarjeta con el fondo desenfocado y al cerrar regresa al carrusel (RN-05)</div>
+<div class="ca"><b>CA-006: Saltar</b>Given el carrusel · When presiona «Saltar» · Then va a inicio (RN-06)</div>
+<div class="ca"><b>CA-007: Ya no le toca por frecuencia</b>Given una campaña «una vez al día» ya vista hoy · When vuelve a iniciar sesión el mismo día · Then no aparece (RN-07)</div>
+<div class="ca"><b>CA-008: Más de 5</b>Given 7 campañas que le tocan hoy · When inicia sesión · Then el carrusel muestra las 5 con más visualizaciones y las otras 2 siguen en Campañas (RN-08)</div>
+<h4>Reglas de negocio</h4>
+<ul>
+  <li><b>RN-01:</b> Solo las campañas de su línea; en Corporativo, si se asignó a una empresa, solo la ven los usuarios de esa empresa.</li>
+  <li><b>RN-02:</b> Aparece al entrar, encima de todo, con opción de salir.</li>
+  <li><b>RN-03:</b> El orden lo manda el portal; cada banner lleva su título.</li>
+  <li><b>RN-04:</b> Con 2 o más avanza cada 4 s y se desliza; con uno, fijo.</li>
+  <li><b>RN-05:</b> Tocar agranda; cerrar regresa al carrusel.</li>
+  <li><b>RN-06:</b> Saltar lleva a inicio y no cuenta como visualización.</li>
+  <li><b>RN-07:</b> Cada campaña aparece según su frecuencia (cada inicio de sesión, una vez al día, 3 veces al día) y su vigencia.</li>
+  <li><b>RN-08:</b> Máximo 5 en el carrusel: las de más visualizaciones entre las que tocan ese día, en el orden del portal.</li>
+</ul>
+</details>
+
+<h2>6. Plan de pruebas derivado</h2>
+<p>Las reglas con número y frontera se convierten en casos casi solos. Estos son los que priorizaría por riesgo: si fallan,
+  el usuario ve una promoción que no debe o deja de ver una que sí.</p>
+<div class="tw"><table>
+  <thead><tr><th>Riesgo</th><th>Caso</th><th>Valores de frontera</th><th>Prueba</th></tr></thead>
+  <tbody>
+    <tr><td>Alto</td><td>Tope por usuario con empresa</td><td>9, 10 y 11 asignadas, mezclando «Todos» y «Oficinas Alfa»</td><td>RN-01 y RN-02 de <code>005</code></td></tr>
+    <tr><td>Alto</td><td>Fin de vigencia</td><td>23:59 del día de fin frente a 00:00 del día siguiente</td><td>RN-04 de <code>004</code></td></tr>
+    <tr><td>Alto</td><td>Inicio hoy</td><td>Creada a las 12:35, asignada a las 15:00: la vigencia cuenta desde 12:35</td><td>RN-03 de <code>004</code></td></tr>
+    <tr><td>Alto</td><td>Frecuencia</td><td>«3 veces al día»: 3.º y 4.º inicio de sesión; refrescar no cuenta</td><td>RN-07 de <code>009</code>, <code>008</code></td></tr>
+    <tr><td>Medio</td><td>Empalme de sustituta</td><td>Sustituta que empieza 1 día antes, el mismo día y 1 día después del fin de la sustituida</td><td>RN-05 de <code>005</code></td></tr>
+    <tr><td>Medio</td><td>Fechas inválidas</td><td>Ayer; fin antes del inicio; inicio = fin</td><td>RN-02 de <code>004</code></td></tr>
+    <tr><td>Medio</td><td>Carrusel tope 5</td><td>5, 6 y 7 campañas que tocan hoy</td><td>RN-08 de <code>009</code></td></tr>
+    <tr><td>Bajo</td><td>Acceso por dominio</td><td>Dominio permitido, no permitido, mayúsculas en el correo</td><td><code>014</code></td></tr>
+  </tbody>
+</table></div>
+<p>Además, como requisitos transversales: <b>accesibilidad</b> (roles y nombres en listas desplegables, foco visible,
+  animaciones que respetan «reducir movimiento»), <b>responsive</b> (el micrositio se apila en pantallas angostas) y
+  <b>modo claro y oscuro</b>. El demo ya los cumple. El botón «Avanzar 1 día» existe para probar vigencias sin esperar.</p>
+
+<h2>7. Qué me llevo</h2>
+<ul>
+  <li><b>La fuente literal es lo que resuelve discusiones.</b> Cuando una regla parecía contradecir otra, el número de mensaje decía cuál era la vigente.</li>
+  <li><b>Un prototipo temprano adelanta las preguntas.</b> La mitad de las decisiones salió de ver el demo, no de leer historias.</li>
+  <li><b>Lo que no está decidido se escribe como no decidido.</b> Textos de notificación y tope ajustable (1 a 100) quedaron como <code>POR_DEFINIR</code> o fase 2, en lugar de inventarse.</li>
+</ul>
+
+<footer>Brío Café, sus apps, empresas, correos y promociones son ficticios. <a href="demo.html">Abrir el demo</a> · <a href="../index.html">Volver al portafolio</a></footer>
+</main>
+</body>
+</html>

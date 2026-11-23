@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Saúl García · QA, automatización e IA aplicada a pruebas</title>
+<meta name="description" content="QA y Product Owner con 14 años de experiencia: automatización web y de API con Playwright y TypeScript, diseño de pruebas, seguridad defensiva y QA asistido con agentes de IA.">
+<style>
+:root { --bg: #F4F5F7; --surface: #FFFFFF; --ink: #16191F; --muted: #5A6170; --line: #DADDE3; --accent: #2F5D50; --accent-soft: #E3EFEA;
+  --warn-soft: #FCEFD9; --warn: #7A4A00; --f: system-ui, "Segoe UI", Roboto, sans-serif; color-scheme: light dark }
+@media (prefers-color-scheme: dark) { :root { --bg: #111317; --surface: #1A1D23; --ink: #E7EAF0; --muted: #9AA2B1; --line: #2C313A;
+  --accent: #7CC4AE; --accent-soft: #1E2E29; --warn-soft: #3A2C14; --warn: #F0B65A } }
+* { box-sizing: border-box }
+[hidden] { display: none !important }
+html { scroll-behavior: smooth }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto } }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 var(--f) }
+a { color: var(--accent); font-weight: 600 }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.envoltura { max-width: 1000px; margin: 0 auto; padding: 0 20px }
+header.barra { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line) }
+header.barra .envoltura { display: flex; gap: 18px; align-items: center; min-height: 56px; flex-wrap: wrap }
+header.barra strong { margin-right: auto }
+header.barra nav { display: flex; gap: 16px; flex-wrap: wrap; font-size: 14.5px }
+.saltar { position: absolute; left: -9999px } .saltar:focus { left: 12px; top: 8px; background: var(--surface); padding: 6px 10px; z-index: 9 }
+section { padding: 56px 0 8px; scroll-margin-top: 56px }
+.portada { padding-top: 72px }
+h1 { font-size: clamp(30px, 5.5vw, 46px); line-height: 1.08; margin: 0 0 14px; text-wrap: balance; max-width: 22ch }
+h2 { font-size: clamp(24px, 3.6vw, 30px); margin: 0 0 8px; text-wrap: balance }
+h3 { font-size: 18px; margin: 0 }
+.lead { color: var(--muted); font-size: 18px; max-width: 62ch; margin: 0 0 24px }
+.intro { color: var(--muted); max-width: 66ch; margin: 0 0 24px }
+.boton { display: inline-block; background: var(--accent); color: var(--surface); text-decoration: none; padding: 12px 22px; border-radius: 10px; font-weight: 700; margin: 0 10px 10px 0 }
+.boton.sec { background: transparent; color: var(--accent); border: 1.5px solid var(--accent) }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; display: flex; flex-direction: column; gap: 10px }
+.card p { margin: 0; color: var(--muted); font-size: 15px }
+.card .prueba { font-size: 14px; color: var(--ink); margin-top: auto; padding-top: 6px }
+.tags { display: flex; flex-wrap: wrap; gap: 6px }
+.tags span { background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 2px 10px; font-size: 12.5px; font-weight: 600 }
+dl.pza { margin: 0; display: grid; gap: 6px; font-size: 14.5px }
+dl.pza dt { font-weight: 700; color: var(--ink) }
+dl.pza dd { margin: 0 0 2px; color: var(--muted) }
+.acts { display: flex; gap: 14px; flex-wrap: wrap; margin-top: auto; padding-top: 8px; font-size: 15px }
+.pendiente { color: var(--muted); font-size: 14px; font-style: italic }
+.ia { display: grid; gap: 18px }
+.video { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; margin: 0 }
+.video video, .video img { display: block; width: 100%; height: auto }
+.controles { display: flex; gap: 10px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted) }
+.controles button { font: inherit; font-weight: 700; border: 1.5px solid var(--accent); color: var(--accent); background: transparent; border-radius: 8px; padding: 6px 14px; min-height: 36px; cursor: pointer }
+ol.pasos { margin: 0; padding-left: 22px; display: grid; gap: 6px; max-width: 70ch }
+.contacto-acts { display: flex; flex-wrap: wrap }
+.correo { color: var(--muted); font-size: 14.5px; margin: 4px 0 0 }
+footer { margin: 64px 0 40px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); padding-top: 18px }
+</style>
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+<header class="barra"><div class="envoltura">
+  <strong>Saúl García</strong>
+  <nav aria-label="Secciones">
+    <a href="#servicios">Servicios</a><a href="#pruebas">Pruebas de trabajo</a><a href="#ia">Cómo trabajo con IA</a><a href="#contacto">Contacto</a>
+  </nav>
+</div></header>
+
+<main id="contenido" class="envoltura">
+  <section class="portada" data-testid="portada" aria-labelledby="t-portada">
+    <h1 id="t-portada">QA y Product Owner: pruebas que demuestran que tu producto hace lo que promete</h1>
+    <p class="lead">14 años en calidad de software y producto. Automatizo pruebas web y de API, diseño casos con técnica, y uso
+      agentes de IA en QA con reglas, evidencia y aprobación humana en cada paso.</p>
+    <a class="boton" href="#contacto" data-testid="cta-contacto">Hablemos de tu proyecto</a>
+    <a class="boton sec" href="#pruebas">Ver pruebas de trabajo</a>
+  </section>
+
+  <section id="servicios" data-testid="servicios" aria-labelledby="t-servicios">
+    <h2 id="t-servicios">Lo que hago por ti</h2>
+    <p class="intro">Cada servicio tiene una prueba de trabajo que puedes abrir y revisar.</p>
+    <div class="grid">
+      <article class="card">
+        <h3>Arranque de automatización web y API</h3>
+        <p>Una base de pruebas con Playwright y TypeScript lista para crecer: fixtures, Page Objects, cliente de API, etiquetas
+          por riesgo y reportes, corriendo en tu CI desde el primer día.</p>
+        <p class="prueba">Prueba: <a href="tea/caso.html">la suite e2e de Puente</a> y <a href="https://saulgar2.github.io/jangapp-contact-cypress/" rel="noopener">un reporte publicado</a></p>
+      </article>
+      <article class="card">
+        <h3>Diseño y revisión de pruebas</h3>
+        <p>Casos con técnica ISTQB (particiones, valores límite, tablas de decisión, transición de estados) y trazabilidad
+          hasta la historia de usuario. Sabes qué cubre cada prueba y qué riesgo queda.</p>
+        <p class="prueba">Prueba: <a href="campanas/caso.html">plan de pruebas por riesgo de Brío Café</a></p>
+      </article>
+      <article class="card">
+        <h3>Pruebas de API y seguridad defensiva</h3>
+        <p>Contratos, permisos, casos negativos, cabeceras de seguridad y control de acceso (AuthN/AuthZ). Sin pruebas
+          destructivas y siempre con autorización.</p>
+        <p class="prueba">Prueba: <a href="tea/caso.html">privacidad de los datos de un menor en Puente</a></p>
+      </article>
+      <article class="card">
+        <h3>QA asistido con agentes de IA</h3>
+        <p>Agentes que hacen recon de selectores, proponen casos y redactan reportes, detrás de reglas en código: lo que no
+          está permitido no se ejecuta, y lo irreversible espera a una persona.</p>
+        <p class="prueba">Prueba: <a href="#senala">la extensión Señala</a> y <a href="#ia">cómo gobierno a los agentes</a></p>
+      </article>
+      <article class="card">
+        <h3>Historias de usuario desde cero</h3>
+        <p>De lo que dice el negocio a historias con criterios de aceptación verificables, supuestos explícitos y preguntas
+          con dueño. Un prototipo navegable para descubrir antes de construir.</p>
+        <p class="prueba">Prueba: <a href="campanas/caso.html">el caso PO de Brío Café</a></p>
+      </article>
+    </div>
+  </section>
+
+  <section id="pruebas" data-testid="pruebas" aria-labelledby="t-pruebas">
+    <h2 id="t-pruebas">Pruebas de trabajo</h2>
+    <p class="intro">Cada pieza cuenta el problema, qué hice y cómo lo probé. Los nombres, marcas y datos son ficticios.</p>
+    <div class="grid">
+      <article class="card" data-testid="pieza-campanas">
+        <h3>Brío Café · campañas publicitarias en apps</h3>
+        <dl class="pza">
+          <dt>Problema</dt><dd>Una cadena de cafeterías quiere crear campañas con banner, asignarlas a sus apps con vigencia y frecuencia, y medirlas.</dd>
+          <dt>Qué hice</dt><dd>Prototipo navegable, registro de decisiones y el corte en 16 historias, con 3 completas.</dd>
+          <dt>Cómo lo probé</dt><dd>Plan de pruebas por riesgo, con las reglas de vigencia y frecuencia como casos límite.</dd>
+        </dl>
+        <div class="tags"><span>Product Owner</span><span>Prototipo</span><span>Reglas de negocio</span></div>
+        <div class="acts"><a href="campanas/caso.html">Caso de estudio</a><a href="campanas/demo.html">Abrir demo</a></div>
+      </article>
+      <article class="card" data-testid="pieza-tea">
+        <h3>Puente · rutinas y avisos para niños con TEA</h3>
+        <dl class="pza">
+          <dt>Problema</dt><dd>El niño casi no puede iniciar la comunicación, y los avisos no llevan al cuidador a lo que pasó.</dd>
+          <dt>Qué hice</dt><dd>Dos apps comunicadas en los dos sentidos, con cola sin conexión, acuses y diseño accesible.</dd>
+          <dt>Cómo lo probé</dt><dd>19 pruebas e2e con Playwright y axe, y 10 mutantes para comprobar que las pruebas detectan fallas.</dd>
+        </dl>
+        <div class="tags"><span>QA</span><span>Accesibilidad</span><span>Sin conexión</span><span>Mutación</span></div>
+        <div class="acts"><a href="tea/caso.html">Caso de estudio</a><a href="tea/demo.html">Abrir demo</a></div>
+      </article>
+      <article class="card" id="senala" data-testid="pieza-senala">
+        <h3>Señala · extensión de locators</h3>
+        <dl class="pza">
+          <dt>Problema</dt><dd>Automatizar un portal empieza por adivinar selectores en DevTools, uno por uno.</dd>
+          <dt>Qué hice</dt><dd>Una extensión que lista el locator más estable de cada elemento, lo señala en la página y permite usarlo desde el panel.</dd>
+          <dt>Cómo lo probé</dt><dd>Cada locator se compara contra lo que Playwright encuentra de verdad: 14 pruebas, incluida la extensión real cargada en el navegador, y 10 mutantes.</dd>
+        </dl>
+        <div class="tags"><span>Automatización</span><span>Extensión de navegador</span><span>Playwright</span></div>
+        <p class="pendiente">Repositorio por publicar.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="ia" class="ia" data-testid="ia" aria-labelledby="t-ia">
+    <div>
+      <h2 id="t-ia">Cómo trabajo con IA</h2>
+      <p class="intro">No «uso IA»: la gobierno. Trabajo con varios agentes, y ninguno decide solo lo importante.</p>
+    </div>
+    <figure class="video">
+      <video id="video" data-testid="video" muted loop playsinline preload="metadata" poster="ia/ecosistema.png"
+        aria-describedby="pasos-ia" width="960" height="540">
+        <source src="ia/ecosistema.mp4" type="video/mp4">
+        <img src="ia/ecosistema.png" alt="Diagrama del flujo de trabajo con agentes de IA; la secuencia está en texto debajo.">
+      </video>
+      <figcaption class="controles">
+        <button id="pausa" data-testid="pausa" type="button" aria-pressed="false">Pausar</button>
+        <span>Animación de 26 s en bucle. La secuencia completa está en texto debajo.</span>
+      </figcaption>
+    </figure>
+    <ol class="pasos" id="pasos-ia" data-testid="pasos-ia">
+      <li><b>Pido algo.</b> Un agente crítico lo filtra contra evidencia y emite un veredicto: aprobar, ajustar o rechazar.</li>
+      <li><b>El veredicto se vuelve un encargo escrito</b>, no una conversación, para el agente que construye: uno de skills, uno de apps o uno de QA.</li>
+      <li><b>El agente trabaja detrás de reglas en código</b> que deciden qué se puede ejecutar: solo lectura en producción y ningún secreto en el repositorio.</li>
+      <li><b>Lo irreversible espera mi aprobación</b>, por ejemplo publicar.</li>
+      <li><b>El crítico verifica él mismo</b>, corriendo las pruebas, y registra el resultado en un índice. Nada sin dueño, nada sin evidencia.</li>
+    </ol>
+  </section>
+
+  <section id="contacto" data-testid="contacto" aria-labelledby="t-contacto">
+    <h2 id="t-contacto">Contacto</h2>
+    <p class="intro">¿Tienes un producto que probar o una suite que arrancar? Cuéntame qué necesitas y te respondo con una propuesta.</p>
+    <div class="contacto-acts">
+      <a class="boton" data-testid="escribeme" href="mailto:saulgar2@gmail.com?subject=Servicios%20de%20QA">Escríbeme</a>
+      <a class="boton sec" data-testid="linkedin" href="https://www.linkedin.com/in/saul-garcia-garcia-b186029a" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+    <p class="correo">o directo a <span data-testid="correo">saulgar2@gmail.com</span></p>
+  </section>
+
+  <footer>Los demos usan dominios de ejemplo (<code>*.example</code>); ningún dato corresponde a personas ni empresas reales.
+    Este sitio no carga recursos externos.</footer>
+</main>
+<script>
+  // El video arranca solo si la persona no pidió reducir el movimiento; el botón lo pausa o reanuda.
+  const v = document.getElementById('video'), b = document.getElementById('pausa');
+  const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pinta = () => { const p = v.paused; b.textContent = p ? 'Reproducir' : 'Pausar'; b.setAttribute('aria-pressed', String(p)); };
+  b.addEventListener('click', () => { if (v.paused) v.play(); else v.pause(); });
+  v.addEventListener('play', pinta); v.addEventListener('pause', pinta);
+  if (!quieto) v.play().catch(pinta);
+  pinta();
+</script>
+</body>
+</html>

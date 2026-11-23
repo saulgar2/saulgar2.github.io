@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Puente · demo de rutinas y avisos</title>
+<style>
+/* Dos teléfonos (niño y cuidador) unidos por una red simulada; al centro, los controles de prueba y la bitácora. */
+:root {
+  --bg: #F2F0EB; --surface: #FFFFFF; --surface-2: #F7F6F2; --ink: #1B1D21; --muted: #5C6068; --line: #DEDBD3;
+  --nino: #2E6F73; --nino-soft: #E1EFEF; --cuid: #3F4C8A; --cuid-soft: #E6E8F4;
+  --ok: #276B45; --ok-soft: #E0F1E7; --warn: #8A5300; --warn-soft: #FBEFD9; --bad: #A3322B; --bad-soft: #F9E3E1;
+  --frame: #1E2024; --f: system-ui, "Segoe UI", Roboto, sans-serif; --mono: ui-monospace, Consolas, monospace;
+  --s1: #276B45; --s2: #5E8A2E; --s3: #8F6E12; --s4: #B35A22; --s5: #A3322B; color-scheme: light }
+@media (prefers-color-scheme: dark) { :root {
+  --bg: #121417; --surface: #1B1E23; --surface-2: #22262C; --ink: #E8EAEE; --muted: #A0A6B0; --line: #30353D;
+  --nino: #7CC3C6; --nino-soft: #1C3133; --cuid: #A9B3EC; --cuid-soft: #23283F;
+  --ok: #7CD6A0; --ok-soft: #173325; --warn: #F0B65A; --warn-soft: #3A2C14; --bad: #F0938A; --bad-soft: #3D1C19;
+  --frame: #000; --s1: #7CD6A0; --s2: #B5D67C; --s3: #E8C65A; --s4: #F0A06A; --s5: #F0938A; color-scheme: dark } }
+* { box-sizing: border-box }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 var(--f); padding: 20px 16px 40px }
+button, input, select { font: inherit; color: inherit }
+button { cursor: pointer }
+:focus-visible { outline: 3px solid var(--nino); outline-offset: 2px }
+.cuidp :focus-visible { outline-color: var(--cuid) }
+h1, h2, h3 { margin: 0; text-wrap: balance }
+a { color: var(--nino); font-weight: 600 }
+.wrap { max-width: 1280px; margin: 0 auto }
+.top { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: end; margin-bottom: 18px }
+.top p { margin: 4px 0 0; color: var(--muted); max-width: 70ch }
+.stage { display: grid; grid-template-columns: 390px minmax(260px, 1fr) 390px; gap: 22px; align-items: start }
+@media (max-width: 1180px) { .stage { grid-template-columns: 1fr; justify-items: center } .mid { width: 100%; max-width: 640px; order: 3 } }
+.lbl { font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; text-align: center }
+
+/* Teléfono */
+.phone { width: 390px; max-width: 100%; height: 780px; background: var(--frame); border-radius: 44px; padding: 12px; box-shadow: 0 14px 40px rgba(0,0,0,.18) }
+.screen { position: relative; height: 100%; border-radius: 34px; overflow: hidden; background: var(--surface); display: flex; flex-direction: column }
+.sb { display: flex; justify-content: space-between; align-items: center; padding: 12px 22px 6px; font: 600 13px var(--mono) }
+.net { font: 600 12px var(--f); padding: 2px 9px; border-radius: 999px; background: var(--ok-soft); color: var(--ok) }
+.net.off { background: var(--warn-soft); color: var(--warn) }
+.body { flex: 1; overflow-y: auto; padding: 6px 18px 18px; display: flex; flex-direction: column; gap: 14px }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }
+
+/* Niño: fondo suave, todo grande y redondo, un solo foco por pantalla */
+.ninop .screen { background: linear-gradient(180deg, var(--nino-soft) 0%, var(--surface-2) 55%) }
+.hola { display: flex; align-items: center; gap: 12px }
+.hola .av { width: 52px; height: 52px; border-radius: 50%; background: var(--surface); display: grid; place-items: center; font-size: 30px; box-shadow: 0 2px 8px rgba(0,0,0,.08) }
+.hola b { display: block; font-size: 22px } .hola small { color: var(--muted); font-size: 14px }
+.burbuja { width: 136px; height: 136px; border-radius: 50%; background: var(--nino-soft); display: grid; place-items: center }
+.burbuja .pic { font-size: 76px }
+.cuidp .screen { background: linear-gradient(180deg, var(--cuid-soft) 0%, var(--surface) 140px) }
+.ava { width: 42px; height: 42px; border-radius: 50%; background: var(--surface); display: grid; place-items: center; font-size: 24px; box-shadow: 0 2px 8px rgba(0,0,0,.08) }
+.ahora { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 12px 14px; display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,.04) }
+.ahora .burbuja { width: 52px; height: 52px; background: var(--nino-soft) } .ahora .burbuja .pic { font-size: 28px }
+.ahora small { color: var(--muted); display: block } .ahora b { font-size: 16px }
+.barra { height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; margin-top: 6px } .barra i { display: block; height: 100%; background: var(--nino); border-radius: 4px }
+.rut { display: flex; justify-content: space-between; align-items: center }
+.rut h2 { font-size: 20px }
+.dots { display: flex; gap: 6px; margin-top: 4px } .dots i { width: 22px; height: 8px; border-radius: 4px; background: var(--line) } .dots i.hecho { background: var(--nino) } .dots i.actual { background: var(--nino); opacity: .45 }
+.paso { background: var(--surface); border: 0; box-shadow: 0 6px 22px rgba(0,0,0,.07); border-radius: 28px; padding: 18px; display: grid; justify-items: center; gap: 8px; text-align: center }
+.pic { font-size: 84px; line-height: 1 }
+.paso h3 { font-size: 26px }
+.ring { position: relative; width: 120px; height: 120px }
+.ring svg { transform: rotate(-90deg) } .ring circle { fill: none; stroke-width: 12 } .ring .bg { stroke: var(--line) } .ring .fg { stroke: var(--nino); stroke-linecap: round; transition: stroke-dashoffset .9s linear }
+.ring.extra .fg { stroke: var(--warn) }
+.ring b { position: absolute; inset: 0; display: grid; place-items: center; font-size: 15px; padding: 18px; line-height: 1.15 }
+.fila { display: grid; grid-template-columns: 1fr auto auto; gap: 10px }
+.big { min-height: 62px; border-radius: 22px; box-shadow: 0 3px 0 rgba(0,0,0,.08); border: 2px solid transparent; font-size: 19px; font-weight: 700; padding: 8px 16px; display: inline-flex; align-items: center; justify-content: center; gap: 10px }
+.big.pri { background: var(--nino); color: var(--surface) }
+.big.sec { background: var(--surface); border-color: var(--line) }
+.big.cuad { width: 60px; padding: 0; font-size: 24px }
+.acciones { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: auto }
+.ayuda { background: var(--bad-soft); color: var(--bad); border-color: var(--bad) }
+.sentir { background: var(--nino-soft); color: var(--nino); border-color: var(--nino) }
+.chip { font-size: 13.5px; border-radius: 12px; padding: 8px 12px; background: var(--warn-soft); color: var(--warn); font-weight: 600 }
+.escala { display: grid; gap: 10px }
+.esc { display: grid; grid-template-columns: 56px 1fr; align-items: center; gap: 12px; min-height: 66px; border-radius: 18px; border: 3px solid var(--c); background: var(--surface); font-size: 20px; font-weight: 700; text-align: left; padding: 6px 14px }
+.esc span:first-child { font-size: 40px }
+.esc small { display: block; font-size: 13px; font-weight: 500; color: var(--muted) }
+.enviado { display: grid; justify-items: center; text-align: center; gap: 10px; padding-top: 10px }
+.enviado h2 { font-size: 24px }
+.pasos { list-style: none; padding: 0; margin: 4px 0; display: grid; gap: 8px; width: 100% }
+.pasos li { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); font-size: 16px; color: var(--muted) }
+.pasos li.si { color: var(--ink); border-color: var(--nino); font-weight: 600 }
+.resp { width: 100%; background: var(--cuid-soft); border: 2px solid var(--cuid); border-radius: 20px; padding: 14px; display: grid; justify-items: center; gap: 4px }
+.resp .pic { font-size: 60px } .resp b { font-size: 21px }
+.capa { position: absolute; inset: 0; background: rgba(15,17,20,.45); backdrop-filter: blur(4px); display: grid; place-items: center; padding: 22px; z-index: 5 }
+.tarjeta { background: var(--surface); border-radius: 26px; padding: 22px; display: grid; justify-items: center; gap: 10px; text-align: center; width: 100%; border: 3px solid var(--cuid) }
+.tarjeta .de { font-size: 14px; color: var(--muted); font-weight: 600 }
+.tarjeta h2 { font-size: 24px }
+.tarjeta ul { text-align: left; margin: 0; padding-left: 20px; font-size: 16px }
+.fin { background: var(--ok-soft); border: 2px solid var(--ok); border-radius: 24px; padding: 22px; text-align: center; display: grid; gap: 8px; justify-items: center }
+
+/* Cuidador */
+.hdr { display: flex; justify-content: space-between; align-items: center; padding: 4px 18px 10px; border-bottom: 1px solid var(--line) }
+.hdr h2 { font-size: 18px } .hdr small { color: var(--muted) }
+.tabs { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); background: var(--surface) }
+.tab { border: 0; background: none; padding: 9px 4px 12px; font-size: 12.5px; font-weight: 600; color: var(--muted); display: grid; justify-items: center; gap: 2px; position: relative; min-height: 56px }
+.tab span:first-child { font-size: 20px }
+.tab[aria-current="page"] { color: var(--cuid) } .tab[aria-current="page"]::before { content: ""; position: absolute; top: 0; left: 22%; right: 22%; height: 3px; border-radius: 0 0 3px 3px; background: var(--cuid) }
+.badge { position: absolute; top: 4px; right: calc(50% - 22px); background: var(--bad); color: #fff; border-radius: 999px; font-size: 11px; min-width: 18px; padding: 0 5px; line-height: 18px }
+.notif { position: absolute; top: 40px; left: 10px; right: 10px; z-index: 6; background: var(--surface); border: 2px solid var(--bad); border-radius: 18px; box-shadow: 0 10px 28px rgba(0,0,0,.25); padding: 12px 14px; text-align: left; display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; align-items: center; animation: baja .35s ease-out }
+.notif .pic { font-size: 30px; grid-row: span 2 } .notif small { color: var(--muted) }
+@keyframes baja { from { transform: translateY(-14px); opacity: .3 } to { transform: none; opacity: 1 } }
+@media (prefers-reduced-motion: reduce) { .notif { animation: none } .ring .fg { transition: none } }
+.lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px }
+.item { width: 100%; text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: 16px; padding: 12px; display: grid; grid-template-columns: 40px 1fr auto; gap: 10px; align-items: center }
+.item .pic { font-size: 30px } .item b { display: block } .item small { color: var(--muted) }
+.est { font-size: 11.5px; font-weight: 700; border-radius: 999px; padding: 2px 9px; white-space: nowrap; background: var(--surface-2); color: var(--muted); border: 1px solid var(--line) }
+.est.nuevo { background: var(--bad-soft); color: var(--bad); border-color: transparent } .est.ok { background: var(--ok-soft); color: var(--ok); border-color: transparent } .est.esp { background: var(--warn-soft); color: var(--warn); border-color: transparent }
+.vacio { color: var(--muted); text-align: center; padding: 24px 8px }
+.back { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; min-height: 44px; padding: 0 14px; font-weight: 600; justify-self: start }
+.dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 0; background: var(--surface-2); border-radius: 14px; padding: 12px 14px; font-size: 14px }
+.dl dt { color: var(--muted) } .dl dd { margin: 0; font-weight: 600 }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px }
+.opc { min-height: 64px; border: 2px solid var(--line); background: var(--surface); border-radius: 14px; padding: 8px; font-weight: 600; font-size: 14px; display: grid; justify-items: center; gap: 2px; text-align: center }
+.opc span:first-child { font-size: 26px }
+.opc[aria-pressed="true"] { border-color: var(--cuid); background: var(--cuid-soft) }
+.btn { min-height: 46px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); font-weight: 700; padding: 0 16px }
+.btn.pri { background: var(--cuid); color: var(--surface); border-color: var(--cuid) }
+.btn:disabled { opacity: .45; cursor: not-allowed }
+.field { display: grid; gap: 4px; font-size: 13.5px; font-weight: 600 }
+.input { min-height: 44px; border: 1px solid var(--line); border-radius: 10px; padding: 0 12px; background: var(--surface) }
+.hilo { display: grid; gap: 8px } .hilo div { background: var(--cuid-soft); border-radius: 14px; padding: 8px 12px; font-size: 14px; display: flex; justify-content: space-between; gap: 8px; align-items: center }
+.pasoed { display: grid; grid-template-columns: 30px 1fr auto; gap: 8px; align-items: center; border: 1px solid var(--line); border-radius: 14px; padding: 8px 10px; background: var(--surface) }
+.pasoed .pic { font-size: 24px } .pasoed .ctl { display: flex; gap: 4px; align-items: center }
+.mini { width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); font-weight: 700 }
+.segs { display: flex; gap: 6px } .segs button { flex: 1 }
+.tl { list-style: none; margin: 0; padding: 0 0 0 14px; border-left: 2px solid var(--line); display: grid; gap: 10px }
+.tl li { position: relative; font-size: 14px } .tl li::before { content: ""; position: absolute; left: -21px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--line) }
+.tl li.a::before { background: var(--bad) } .tl li.p::before { background: var(--ok) } .tl li.m::before { background: var(--cuid) }
+.tl time { font: 600 12px var(--mono); color: var(--muted); margin-right: 6px }
+
+/* Centro: controles y bitácora */
+.mid { display: grid; gap: 14px }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; display: grid; gap: 10px }
+.panel h2 { font-size: 15px }
+.ctlrow { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap }
+.sw { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px 4px 4px; background: var(--surface-2); font-weight: 600; font-size: 13.5px; min-height: 40px }
+.sw i { width: 34px; height: 20px; border-radius: 999px; background: var(--warn); position: relative } .sw i::after { content: ""; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: left .2s }
+.sw[aria-checked="true"] i { background: var(--ok) } .sw[aria-checked="true"] i::after { left: 17px }
+@media (prefers-reduced-motion: reduce) { .sw i::after { transition: none } }
+.reloj { font: 700 22px var(--mono) }
+.log { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; max-height: 330px; overflow-y: auto; font-size: 13.5px }
+.log li { border-bottom: 1px dashed var(--line); padding-bottom: 6px } .log time { font: 600 11.5px var(--mono); color: var(--muted); margin-right: 6px }
+.nota { font-size: 13px; color: var(--muted); margin: 0 }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>Puente · rutinas y avisos entre niño y cuidador</h1>
+      <p><a href="../index.html">← Portafolio</a> · Dos apps en la misma página. El niño sigue su rutina y puede avisar
+        «necesito ayuda» o cómo se siente; el aviso lleva al cuidador directo al momento en que pasó. El cuidador responde,
+        manda mensajes con pictograma, reconocimientos y cambios de rutina.</p>
+    </div>
+  </div>
+  <div class="stage">
+    <section aria-labelledby="t-nino"><p class="lbl" id="t-nino">App del niño · Leo</p><div class="phone ninop"><div class="screen" id="nino" data-testid="app-nino"></div></div></section>
+    <div class="mid">
+      <section class="panel" aria-labelledby="t-ctl">
+        <h2 id="t-ctl">Controles de prueba</h2>
+        <div class="ctlrow"><span>Hora simulada <span class="reloj" id="reloj" data-testid="reloj"></span></span><button class="btn" data-act="avanzar">Avanzar 1 min</button></div>
+        <div class="ctlrow" id="sws"></div>
+        <label class="field">Latencia de la red
+          <select class="input" id="lat" data-testid="latencia"><option value="150">Rápida · 150 ms</option><option value="600" selected>Normal · 600 ms</option><option value="2500">Lenta · 2.5 s</option></select></label>
+        <div class="ctlrow"><button class="btn" data-act="reintento" data-testid="reintento">Reintentar el último aviso</button><button class="btn" data-act="borrar" data-testid="borrar">Borrar todos los datos</button></div>
+        <p class="nota">Privacidad: no hay servidor ni cuentas. Todo vive en la memoria de esta pestaña y se pierde al recargar o al borrar. El niño aparece con un alias y no hay fotos.</p>
+      </section>
+      <section class="panel" aria-labelledby="t-log">
+        <h2 id="t-log">Qué está pasando</h2>
+        <ol class="log" id="log" data-testid="bitacora"></ol>
+      </section>
+    </div>
+    <section aria-labelledby="t-cuid"><p class="lbl" id="t-cuid">App del cuidador · Mamá</p><div class="phone cuidp"><div class="screen" id="cuid" data-testid="app-cuidador"></div></div></section>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var APP = 'Puente', NINO = 'Leo', CUID = 'Mamá'; // nombre de trabajo de la app; los dos son alias ficticios
+  var EMOC = [
+    { n: 1, t: 'Muy bien', p: '😄', c: 'var(--s1)' }, { n: 2, t: 'Bien', p: '🙂', c: 'var(--s2)' }, { n: 3, t: 'Más o menos', p: '😐', c: 'var(--s3)' },
+    { n: 4, t: 'Mal', p: '😟', c: 'var(--s4)' }, { n: 5, t: 'Muy mal', p: '😣', c: 'var(--s5)' }
+  ];
+  var AVISA_DESDE = 4; // de «Mal» hacia arriba la escala se vuelve aviso con notificación
+  var RESPUESTAS = [['🚶', 'Voy en camino'], ['🫁', 'Respira conmigo: 3 veces'], ['⏳', 'Espera 5 minutos, ya voy'], ['👍', 'Lo estás haciendo bien']];
+  var MENSAJES = [['🍎', 'Hora de comer'], ['🚗', 'Nos vamos en 10 minutos'], ['🛁', 'Hora del baño'], ['🤗', 'Te quiero mucho']];
+  var RECONOCER = [['⭐', '¡Terminaste tu rutina!'], ['🏅', '¡Qué bien pediste ayuda!']];
+  var EXTRA = [['💧', 'Tomar agua'], ['🚽', 'Ir al baño'], ['🧸', 'Recoger juguetes'], ['📖', 'Leer un cuento'], ['🚶', 'Caminar un rato']];
+
+  function rutinasBase() {
+    return [
+      { id: 'man', nombre: 'Mañana', pasos: [['⏰', 'Despertar', 2], ['🪥', 'Lavarse los dientes', 3], ['👕', 'Vestirse', 5], ['🥣', 'Desayunar', 10], ['🎒', 'Preparar la mochila', 3]] },
+      { id: 'tar', nombre: 'Tarde', pasos: [['🍽️', 'Comer', 15], ['✏️', 'Hacer la tarea', 20], ['🧩', 'Jugar', 20], ['🛁', 'Bañarse', 10]] }
+    ].map(function (r) { return { id: r.id, nombre: r.nombre, pasos: r.pasos.map(function (p, i) { return { id: r.id + i, pic: p[0], txt: p[1], min: p[2] }; }) }; });
+  }
+  function copia(x) { return JSON.parse(JSON.stringify(x)); }
+  function esc(t) { return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+  var S, NET, sec = 0;
+  function inicial() {
+    sec = 0;
+    NET = { lat: +(document.getElementById('lat').value), online: { nino: true, cuid: true }, servidor: { nino: [], cuid: [] } };
+    var r = rutinasBase();
+    S = {
+      reloj: 7 * 3600 + 30 * 60, log: [],
+      nino: { rutinas: copia(r), activa: 'man', idx: 0, seg: 0, pausa: false, pantalla: 'dia', cola: [], recibidos: {}, avisos: [], entrantes: [], ultimaEmo: null, ultimoAviso: null },
+      cuid: { rutinas: copia(r), borrador: copia(r), activa: 'man', editar: 'man', pantalla: 'avisos', cola: [], recibidos: {}, eventos: [], enviados: [], hist: [], notif: null, sel: null, opc: 0, texto: '', rutEnviada: null }
+    };
+  }
+
+  /* ---------- Reloj ---------- */
+  function hora(s) { var h = Math.floor(s / 3600) % 24, m = Math.floor(s / 60) % 60; return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0'); }
+  function mins(s) { var m = Math.round(s / 60); return m <= 0 ? 'menos de 1 min' : m === 1 ? '1 min' : m + ' min'; }
+  function anota(t) { S.log.unshift({ h: hora(S.reloj), t: t }); S.log = S.log.slice(0, 60); }
+
+  /* ---------- Red simulada: cola en el teléfono → servidor → teléfono destino ---------- */
+  var nId = 0;
+  function otro(x) { return x === 'nino' ? 'cuid' : 'nino'; }
+  function enviar(de, msg) {
+    msg.id = msg.id || de + '-' + (++nId); msg.ts = S.reloj;
+    var it = { id: msg.id, de: de, para: otro(de), msg: msg, estado: 'pendiente', t0: null, ms: null };
+    S[de].cola.push(it);
+    flush(de);
+    return it;
+  }
+  function flush(de) {
+    if (!NET.online[de]) return;
+    S[de].cola.forEach(function (it) {
+      if (it.estado !== 'pendiente') return;
+      it.estado = 'saliendo'; it.t0 = performance.now();
+      setTimeout(function () { alServidor(it); }, NET.lat);
+    });
+  }
+  function alServidor(it) {
+    if (!S || S[it.de].cola.indexOf(it) < 0) return; // se borraron los datos a medio camino
+    it.estado = 'enviado';
+    NET.servidor[it.para].push(it);
+    entrega(it.para); pinta();
+  }
+  function entrega(para) {
+    if (!NET.online[para]) return;
+    var q = NET.servidor[para]; NET.servidor[para] = [];
+    q.forEach(function (it) { setTimeout(function () { recibe(para, it); }, NET.lat); });
+  }
+  function recibe(para, it) {
+    if (!S || S[it.de].cola.indexOf(it) < 0) return;
+    if (S[para].recibidos[it.id]) { anota('Llegó repetido el mensaje ' + it.id + ' a ' + (para === 'nino' ? NINO : CUID) + ': se descartó, no se muestra dos veces.'); pinta(); return; }
+    S[para].recibidos[it.id] = true;
+    it.estado = 'entregado'; it.ms = Math.round(performance.now() - it.t0);
+    (para === 'cuid' ? llegaCuid : llegaNino)(it.msg, it);
+    pinta();
+  }
+  // Confirmación de lectura: viaja de vuelta como cualquier mensaje, con su propia cola.
+  function visto(quien, it) { if (it.estado === 'visto') return; enviar(quien, { tipo: 'visto', ref: it.id }); }
+  // El acuse llega a quien mandó el mensaje original: lo busca en su propia cola.
+  function llegaVisto(msg, quien) { var it = S[quien].cola.find(function (x) { return x.id === msg.ref; }); if (it) it.estado = 'visto'; }
+
+  /* ---------- Lo que llega al cuidador ---------- */
+  function llegaCuid(msg, it) {
+    var c = S.cuid;
+    if (msg.tipo === 'visto') { llegaVisto(msg, 'cuid'); return; }
+    if (msg.tipo === 'progreso') { if (msg.ctx) c.ahora = msg.ctx; c.hist.push({ h: msg.ts, k: 'p', t: msg.txt }); anota(CUID + ' recibe el avance: ' + msg.txt + '.'); return; }
+    if (msg.tipo === 'ayuda' || msg.tipo === 'sentir') {
+      var urg = msg.tipo === 'ayuda' || msg.nivel >= AVISA_DESDE;
+      var e = { id: msg.id, msg: msg, it: it, estado: 'nuevo', resp: [], urg: urg };
+      c.hist.push({ h: msg.ts, k: urg ? 'a' : 'p', t: titulo(msg) + ' · ' + msg.ctx.rutina + ' › ' + msg.ctx.paso });
+      if (urg) { c.eventos.unshift(e); c.notif = e.id; anota('Notificación a ' + CUID + ': «' + titulo(msg) + '». Tardó ' + it.ms + ' ms desde que salió del teléfono de ' + NINO + '.'); }
+      else anota(CUID + ' registra que ' + NINO + ' se siente «' + EMOC[msg.nivel - 1].t + '». No notifica: solo avisa de «Mal» hacia arriba.');
+    }
+  }
+  function titulo(msg) { return msg.tipo === 'ayuda' ? NINO + ' necesita ayuda' : NINO + ' se siente ' + EMOC[msg.nivel - 1].t.toLowerCase(); }
+
+  /* ---------- Lo que llega al niño ---------- */
+  function llegaNino(msg) {
+    var n = S.nino;
+    if (msg.tipo === 'visto') {
+      llegaVisto(msg, 'nino');
+      var av = n.avisos.find(function (a) { return a.id === msg.ref; }); if (av) { av.visto = true; anota(NINO + ' ve que ' + CUID + ' ya leyó su aviso.'); }
+      return;
+    }
+    if (msg.tipo === 'respuesta') {
+      var a = n.avisos.find(function (x) { return x.id === msg.ref; });
+      if (a) a.resp = msg;
+      if (!(n.pantalla === 'avisado' && n.ultimoAviso === msg.ref)) n.entrantes.push(msg);
+      anota(NINO + ' recibe la respuesta: «' + msg.txt + '».');
+      return;
+    }
+    if (msg.tipo === 'rutina') {
+      var antes = n.rutinas.find(function (r) { return r.id === msg.rutina.id; });
+      msg.cambios = difer(antes, msg.rutina);
+      n.rutinas = n.rutinas.map(function (r) { return r.id === msg.rutina.id ? copia(msg.rutina) : r; });
+      if (n.activa === msg.rutina.id) { var r = actual(); if (n.idx > r.pasos.length) n.idx = r.pasos.length; }
+      n.entrantes.push(msg); anota(NINO + ' recibe un cambio en su rutina «' + msg.rutina.nombre + '».');
+      return;
+    }
+    n.entrantes.push(msg); anota(NINO + ' recibe ' + (msg.tipo === 'reconocimiento' ? 'un reconocimiento' : 'un mensaje') + ': «' + msg.txt + '».');
+  }
+  function difer(a, b) {
+    var out = [], na = (a ? a.pasos : []).map(function (p) { return p.txt; }), nb = b.pasos.map(function (p) { return p.txt; });
+    nb.forEach(function (t) { if (na.indexOf(t) < 0) out.push('Nuevo: ' + t); });
+    na.forEach(function (t) { if (nb.indexOf(t) < 0) out.push('Ya no va: ' + t); });
+    if (!out.length && na.join() !== nb.join()) out.push('Cambió el orden de los pasos');
+    b.pasos.forEach(function (p) { var q = a && a.pasos.find(function (x) { return x.txt === p.txt; }); if (q && q.min !== p.min) out.push(p.txt + ': ahora ' + p.min + ' min'); });
+    return out.length ? out : ['Sin cambios visibles'];
+  }
+
+  /* ---------- Niño ---------- */
+  function actual() { var n = S.nino; return n.rutinas.find(function (r) { return r.id === n.activa; }); }
+  function contexto() {
+    var n = S.nino, r = actual(), p = r.pasos[n.idx];
+    return { rutina: r.nombre, paso: p ? p.txt : 'Rutina terminada', pic: p ? p.pic : '🏁', n: Math.min(n.idx + 1, r.pasos.length), total: r.pasos.length, seg: n.seg, min: p ? p.min : 0, emo: n.ultimaEmo };
+  }
+  function avisar(tipo, nivel) {
+    var n = S.nino, msg = { tipo: tipo, ctx: contexto() };
+    if (tipo === 'sentir') { msg.nivel = nivel; n.ultimaEmo = nivel; }
+    var it = enviar('nino', msg);
+    n.avisos.push({ id: it.id, tipo: tipo, nivel: nivel, it: it, resp: null, visto: false });
+    n.ultimoAviso = it.id; n.pantalla = 'avisado';
+    anota(NINO + (tipo === 'ayuda' ? ' pide ayuda' : ' dice que se siente «' + EMOC[nivel - 1].t + '»') + ' en «' + msg.ctx.rutina + ' › ' + msg.ctx.paso + '».' + (NET.online.nino ? '' : ' Está sin conexión: el aviso espera en su teléfono.'));
+  }
+  function estadoAviso(a) {
+    if (a.resp) return { k: 3, t: CUID + ' te respondió' };
+    if (a.visto || a.it.estado === 'visto') return { k: 2, t: CUID + ' ya lo vio' };
+    if (a.it.estado === 'entregado') return { k: 1, t: 'Le llegó a ' + CUID };
+    if (a.it.estado === 'pendiente') return { k: 0, t: 'Sin internet: se enviará solo cuando vuelva' };
+    return { k: 0, t: 'Enviando…' };
+  }
+
+  function vistaNino() {
+    var n = S.nino, r = actual(), pend = n.cola.filter(function (it) { return it.estado === 'pendiente'; }).length;
+    var h = '<div class="sb"><span>' + hora(S.reloj) + '</span><span class="net' + (NET.online.nino ? '' : ' off') + '">' + (NET.online.nino ? 'En línea' : 'Sin conexión') + '</span></div><div class="body">';
+    if (n.pantalla === 'dia') {
+      var p = r.pasos[n.idx];
+      h += '<div class="rut"><div class="hola"><span class="av" aria-hidden="true">🧒</span><div><b>¡Hola, ' + NINO + '!</b><small>Rutina de la ' + esc(r.nombre.toLowerCase()) + '</small><div class="dots" aria-hidden="true">' + r.pasos.map(function (x, i) { return '<i class="' + (i < n.idx ? 'hecho' : i === n.idx ? 'actual' : '') + '"></i>'; }).join('') + '</div></div></div>' +
+        '<button class="big sec cuad" data-act="leer" aria-label="Leer en voz alta" data-fk="leer">🔊</button></div>';
+      if (p) {
+        var tot = p.min * 60, frac = Math.min(1, n.seg / tot), extra = n.seg > tot, C = 2 * Math.PI * 52;
+        h += '<div class="paso" data-testid="paso-actual"><span class="sr">Paso ' + (n.idx + 1) + ' de ' + r.pasos.length + '.</span><span class="burbuja" aria-hidden="true"><span class="pic">' + p.pic + '</span></span><h3>' + esc(p.txt) + '</h3>' +
+          '<div class="ring' + (extra ? ' extra' : '') + '" role="timer" aria-live="off"><svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true"><circle class="bg" cx="60" cy="60" r="52"/><circle class="fg" cx="60" cy="60" r="52" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + (C * frac).toFixed(1) + '"/></svg>' +
+          '<b data-timer>' + (extra ? 'Tómate tu tiempo' : 'Faltan ' + mins(tot - n.seg)) + (n.pausa ? '<br>(en pausa)' : '') + '</b></div></div>' +
+          '<div class="fila"><button class="big pri" data-act="listo" data-fk="listo" data-testid="listo">✓ Listo</button><button class="big sec cuad" data-act="pausa" data-fk="pausa" aria-label="' + (n.pausa ? 'Seguir el tiempo' : 'Pausar el tiempo') + '">' + (n.pausa ? '▶' : '⏸') + '</button><span></span></div>';
+      } else {
+        h += '<div class="fin"><span class="pic" aria-hidden="true">🏁</span><h3>¡Terminaste tu rutina!</h3><button class="big sec" data-act="otra" data-fk="otra">Empezar la rutina de la ' + (n.activa === 'man' ? 'tarde' : 'mañana') + '</button></div>';
+      }
+      if (pend) h += '<p class="chip" role="status">' + pend + (pend === 1 ? ' aviso espera' : ' avisos esperan') + ' internet. Se envía solo.</p>';
+      h += '<div class="acciones"><button class="big ayuda" data-act="ayuda" data-fk="ayuda" data-testid="ayuda">🙋 Necesito ayuda</button><button class="big sentir" data-act="sentir" data-fk="sentir" data-testid="como-me-siento">🙂 Cómo me siento</button></div>';
+    } else if (n.pantalla === 'sentir') {
+      h += '<h2>¿Cómo te sientes?</h2><div class="escala">' + EMOC.map(function (e) {
+        return '<button class="esc" style="--c:' + e.c + '" data-act="emo" data-v="' + e.n + '" data-testid="emo-' + e.n + '"><span aria-hidden="true">' + e.p + '</span><span>' + e.t + (e.n >= AVISA_DESDE ? '<small>Le aviso a ' + CUID + '</small>' : '') + '</span></button>';
+      }).join('') + '</div><button class="big sec" data-act="volver" data-fk="volver">← Volver</button>';
+    } else if (n.pantalla === 'avisado') {
+      var a = n.avisos.find(function (x) { return x.id === n.ultimoAviso; }), st = estadoAviso(a), em = a.nivel ? EMOC[a.nivel - 1] : null;
+      h += '<div class="enviado" data-testid="aviso-enviado"><span class="pic" aria-hidden="true">' + (a.tipo === 'ayuda' ? '🙋' : em.p) + '</span><h2>' + (a.tipo === 'ayuda' ? 'Pediste ayuda' : 'Dijiste: ' + em.t) + '</h2>' +
+        (a.tipo === 'sentir' && a.nivel < AVISA_DESDE ? '<p>Lo guardé para que ' + CUID + ' lo vea después.</p>' :
+          '<ol class="pasos" aria-label="Estado del aviso">' + ['Enviado', 'Le llegó a ' + CUID, CUID + ' ya lo vio', CUID + ' te respondió'].map(function (t, i) { return '<li class="' + (st.k >= i && (i > 0 || a.it.estado !== 'pendiente') ? 'si' : '') + '">' + (st.k >= i && (i > 0 || a.it.estado !== 'pendiente') ? '✓ ' : '○ ') + t + '</li>'; }).join('') + '</ol>' +
+          '<p role="status" data-testid="estado-aviso">' + st.t + '</p>') +
+        (a.resp ? '<div class="resp" data-testid="respuesta"><span class="pic" aria-hidden="true">' + a.resp.pic + '</span><b>' + esc(a.resp.txt) + '</b><small>— ' + CUID + '</small></div>' : '') +
+        '<button class="big sec" data-act="volver" data-fk="volver">Volver a mi día</button></div>';
+    }
+    h += '</div>';
+    var m = n.entrantes[0];
+    if (m) {
+      var cab = m.tipo === 'rutina' ? 'Cambio en tu rutina' : m.tipo === 'reconocimiento' ? '¡Reconocimiento!' : m.tipo === 'respuesta' ? 'Respuesta a tu aviso' : 'Mensaje';
+      h += '<div class="capa"><div class="tarjeta" role="dialog" aria-modal="true" aria-labelledby="tj" data-testid="tarjeta-entrante"><span class="de">' + cab + ' · de ' + CUID + '</span><span class="pic" aria-hidden="true">' + (m.tipo === 'rutina' ? '🗓️' : m.pic) + '</span>' +
+        '<h2 id="tj">' + esc(m.tipo === 'rutina' ? 'Rutina de la ' + m.rutina.nombre.toLowerCase() : m.txt) + '</h2>' +
+        (m.tipo === 'rutina' ? '<ul>' + m.cambios.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '') +
+        '<button class="big pri" data-act="entendido" data-fk="entendido" data-testid="entendido">👍 Entendido</button></div></div>';
+    }
+    return h;
+  }
+
+  /* ---------- Cuidador ---------- */
+  function estChip(estado) {
+    var m = { pendiente: ['esp', 'En cola'], saliendo: ['esp', 'Enviando'], enviado: ['', 'Enviado'], entregado: ['', 'Entregado'], visto: ['ok', 'Visto'] }[estado] || ['', estado];
+    return '<span class="est ' + m[0] + '">' + m[1] + '</span>';
+  }
+  function chipEvento(e) { var m = { nuevo: ['nuevo', 'Nuevo'], visto: ['', 'Visto'], respondido: ['esp', 'Respondido'], atendido: ['ok', 'Atendido'] }[e.estado]; return '<span class="est ' + m[0] + '">' + m[1] + '</span>'; }
+  function vistaCuid() {
+    var c = S.cuid, nuevos = c.eventos.filter(function (e) { return e.estado === 'nuevo'; }).length;
+    var h = '<div class="sb"><span>' + hora(S.reloj) + '</span><span class="net' + (NET.online.cuid ? '' : ' off') + '">' + (NET.online.cuid ? 'En línea' : 'Sin conexión') + '</span></div>' +
+      '<div class="hdr"><div class="hola"><span class="ava" aria-hidden="true">🧒</span><div><h2>' + APP + '</h2><small>Cuidando a ' + NINO + '</small></div></div></div><div class="body">';
+    if (c.pantalla === 'avisos') {
+      var ah = c.ahora;
+      h += '<div class="ahora" data-testid="ahora"><span class="burbuja" aria-hidden="true"><span class="pic">' + (ah ? ah.pic : '⏰') + '</span></span><div><small>Ahora · rutina de la ' + esc((ah ? ah.rutina : 'Mañana').toLowerCase()) + '</small>' +
+        '<b>' + esc(ah ? (ah.paso === 'Rutina terminada' ? '¡Terminó su rutina!' : ah.paso) : 'Despertar') + '</b>' +
+        '<div class="barra" role="img" aria-label="Paso ' + (ah ? ah.n : 1) + ' de ' + (ah ? ah.total : 5) + '"><i style="width:' + Math.round(100 * (ah ? (ah.paso === 'Rutina terminada' ? ah.total : ah.n - 1) / ah.total : 0)) + '%"></i></div></div></div>';
+      h += '<h3>Avisos</h3>' + (c.eventos.length ? '<ul class="lista" data-testid="lista-avisos">' + c.eventos.map(function (e) {
+        return '<li><button class="item" data-act="abrir" data-v="' + e.id + '" data-fk="ev-' + e.id + '"><span class="pic" aria-hidden="true">' + (e.msg.tipo === 'ayuda' ? '🙋' : EMOC[e.msg.nivel - 1].p) + '</span><span><b>' + esc(titulo(e.msg)) + '</b><small>' + esc(e.msg.ctx.rutina + ' › ' + e.msg.ctx.paso) + ' · ' + hora(e.msg.ts) + '</small></span>' + chipEvento(e) + '</button></li>';
+      }).join('') + '</ul>' : '<p class="vacio">Sin avisos. Cuando ' + NINO + ' pida ayuda o diga que se siente mal, llega aquí con el momento exacto.</p>');
+    } else if (c.pantalla === 'evento') {
+      var e = c.eventos.find(function (x) { return x.id === c.sel; }), x = e.msg.ctx;
+      h += '<button class="back" data-act="ir" data-v="avisos" data-fk="back">← Avisos</button>' +
+        '<div data-testid="detalle-evento"><h3 style="font-size:20px">' + (e.msg.tipo === 'ayuda' ? '🙋 ' : EMOC[e.msg.nivel - 1].p + ' ') + esc(titulo(e.msg)) + '</h3></div>' +
+        '<dl class="dl"><dt>Cuándo</dt><dd data-testid="ev-hora">' + hora(e.msg.ts) + '</dd><dt>Rutina</dt><dd data-testid="ev-rutina">' + esc(x.rutina) + '</dd>' +
+        '<dt>Paso</dt><dd data-testid="ev-paso">' + x.pic + ' ' + esc(x.paso) + ' (' + x.n + ' de ' + x.total + ')</dd>' +
+        '<dt>En ese paso</dt><dd>' + mins(x.seg) + (x.min ? ' de ' + x.min + ' previstos' : '') + (x.min && x.seg > x.min * 60 ? ' · se pasó del tiempo' : '') + '</dd>' +
+        '<dt>Ánimo</dt><dd>' + (x.emo ? EMOC[x.emo - 1].p + ' ' + EMOC[x.emo - 1].t : 'Sin registrar hoy') + '</dd>' +
+        '<dt>Llegó en</dt><dd data-testid="ev-latencia">' + e.it.ms + ' ms</dd></dl>';
+      if (e.estado !== 'atendido') h += '<h3>Responder con un toque</h3><div class="grid2">' + RESPUESTAS.map(function (r, i) { return '<button class="opc" data-act="responder" data-v="' + i + '" data-testid="resp-' + i + '"><span aria-hidden="true">' + r[0] + '</span>' + r[1] + '</button>'; }).join('') + '</div>';
+      if (e.resp.length) h += '<div class="hilo" aria-label="Respuestas enviadas">' + e.resp.map(function (it) { return '<div><span>' + it.msg.pic + ' ' + esc(it.msg.txt) + '</span>' + estChip(it.estado) + '</div>'; }).join('') + '</div>';
+      h += e.estado === 'atendido' ? '<p class="est ok" style="justify-self:start">Atendido</p>' : '<button class="btn" data-act="atendido" data-fk="atendido">Marcar como atendido</button>';
+    } else if (c.pantalla === 'mensaje') {
+      var todos = MENSAJES.map(function (m) { return [m[0], m[1], 'mensaje']; }).concat(RECONOCER.map(function (m) { return [m[0], m[1], 'reconocimiento']; }));
+      h += '<h3>Mandarle algo a ' + NINO + '</h3><div class="grid2" role="group" aria-label="Pictograma">' + todos.map(function (m, i) { return '<button class="opc" aria-pressed="' + (c.opc === i) + '" data-act="opc" data-v="' + i + '" data-fk="opc-' + i + '"><span aria-hidden="true">' + m[0] + '</span>' + esc(m[1]) + (m[2] === 'reconocimiento' ? '<small>Reconocimiento</small>' : '') + '</button>'; }).join('') + '</div>' +
+        '<label class="field">Cambiar el texto (opcional)<input class="input" data-in="texto" value="' + esc(c.texto) + '" placeholder="' + esc(todos[c.opc][1]) + '" maxlength="60"></label>' +
+        '<button class="btn pri" data-act="mandar" data-fk="mandar" data-testid="mandar">Enviar a ' + NINO + '</button>';
+      h += c.enviados.length ? '<h3>Enviados</h3><div class="hilo" data-testid="enviados">' + c.enviados.slice().reverse().map(function (it) { return '<div><span>' + (it.msg.pic || '🗓️') + ' ' + esc(it.msg.txt || 'Cambio de rutina') + '</span>' + estChip(it.estado) + '</div>'; }).join('') + '</div>' : '';
+    } else if (c.pantalla === 'rutinas') {
+      var r = c.borrador.find(function (x) { return x.id === c.editar; }), orig = c.rutinas.find(function (x) { return x.id === c.editar; }), cambio = JSON.stringify(r) !== JSON.stringify(orig);
+      h += '<h3>Rutinas</h3><div class="segs" role="group" aria-label="Rutina">' + c.borrador.map(function (x) { return '<button class="btn" aria-pressed="' + (x.id === c.editar) + '" data-act="editar" data-v="' + x.id + '"' + (x.id === c.editar ? ' style="border-color:var(--cuid);background:var(--cuid-soft)"' : '') + '>' + esc(x.nombre) + '</button>'; }).join('') + '</div>' +
+        '<ol class="lista" aria-label="Pasos de la rutina">' + r.pasos.map(function (p, i) {
+          return '<li class="pasoed"><span class="pic" aria-hidden="true">' + p.pic + '</span><span><b>' + esc(p.txt) + '</b><br><small>' + p.min + ' min</small></span><span class="ctl">' +
+            '<button class="mini" data-act="mov" data-v="' + i + ':-1" aria-label="Subir ' + esc(p.txt) + '"' + (i ? '' : ' disabled') + '>↑</button>' +
+            '<button class="mini" data-act="mov" data-v="' + i + ':1" aria-label="Bajar ' + esc(p.txt) + '"' + (i < r.pasos.length - 1 ? '' : ' disabled') + '>↓</button>' +
+            '<button class="mini" data-act="min" data-v="' + i + ':-1" aria-label="Un minuto menos a ' + esc(p.txt) + '">−</button><button class="mini" data-act="min" data-v="' + i + ':1" aria-label="Un minuto más a ' + esc(p.txt) + '">+</button>' +
+            '<button class="mini" data-act="quitar" data-v="' + i + '" aria-label="Quitar ' + esc(p.txt) + '"' + (r.pasos.length > 1 ? '' : ' disabled') + '>✕</button></span></li>';
+        }).join('') + '</ol>' +
+        '<div class="field">Agregar paso<div class="grid2">' + EXTRA.map(function (x, i) { return '<button class="opc" data-act="agregar" data-v="' + i + '"><span aria-hidden="true">' + x[0] + '</span>' + x[1] + '</button>'; }).join('') + '</div></div>' +
+        '<button class="btn pri" data-act="enviar-rutina" data-fk="enviar-rutina" data-testid="enviar-rutina"' + (cambio ? '' : ' disabled') + '>Enviar cambios a ' + NINO + '</button>' +
+        (cambio ? '<button class="btn" data-act="descartar">Descartar cambios</button>' : '<p class="nota">Sin cambios por enviar.</p>') +
+        (c.rutEnviada ? '<div class="hilo"><div><span>Último cambio enviado</span>' + estChip(c.rutEnviada.estado) + '</div></div>' : '');
+    } else if (c.pantalla === 'historial') {
+      h += '<h3>Hoy</h3>' + (c.hist.length ? '<ol class="tl" data-testid="historial">' + c.hist.slice().reverse().map(function (x) { return '<li class="' + x.k + '"><time>' + hora(x.h) + '</time>' + esc(x.t) + '</li>'; }).join('') + '</ol>' : '<p class="vacio">Aquí aparecen los pasos terminados, los avisos y lo que le mandes.</p>');
+    }
+    h += '</div><nav class="tabs" aria-label="Secciones">' + [['avisos', '🔔', 'Avisos'], ['mensaje', '💬', 'Mensajes'], ['rutinas', '🗓️', 'Rutinas'], ['historial', '🕘', 'Historial']].map(function (t) {
+      var on = c.pantalla === t[0] || (t[0] === 'avisos' && c.pantalla === 'evento');
+      return '<button class="tab" data-act="ir" data-v="' + t[0] + '" data-fk="tab-' + t[0] + '"' + (on ? ' aria-current="page"' : '') + '><span aria-hidden="true">' + t[1] + '</span><span>' + t[2] + '</span>' + (t[0] === 'avisos' && nuevos ? '<span class="badge" aria-label="' + nuevos + ' nuevos">' + nuevos + '</span>' : '') + '</button>';
+    }).join('') + '</nav>';
+    var ev = c.notif && c.eventos.find(function (e) { return e.id === c.notif; });
+    if (ev) h += '<button class="notif" data-act="abrir" data-v="' + ev.id + '" data-fk="notif" data-testid="notificacion"><span class="pic" aria-hidden="true">' + (ev.msg.tipo === 'ayuda' ? '🙋' : EMOC[ev.msg.nivel - 1].p) + '</span><b>' + esc(titulo(ev.msg)) + '</b><small>' + esc(ev.msg.ctx.rutina + ' › ' + ev.msg.ctx.paso) + ' · toca para ver</small></button>';
+    return h;
+  }
+
+  /* ---------- Pintar, conservando el foco ---------- */
+  var vivo = { nino: '', cuid: '' };
+  function pintaUno(id, html) {
+    var el = document.getElementById(id), a = document.activeElement, fk = a && el.contains(a) ? a.getAttribute('data-fk') : null;
+    el.innerHTML = html;
+    var dlg = el.querySelector('[role="dialog"] [data-fk]');
+    // Si el botón que tenía el foco ya no existe (cambió la pantalla), el foco pasa al primer control de la pantalla nueva.
+    var dest = (fk && el.querySelector('[data-fk="' + fk + '"]')) || (dlg && el.contains(a) ? dlg : null) || (fk ? el.querySelector('[data-fk]') : null);
+    if (dest) dest.focus();
+  }
+  function pinta() {
+    pintaUno('nino', vistaNino()); pintaUno('cuid', vistaCuid());
+    document.getElementById('reloj').textContent = hora(S.reloj);
+    document.getElementById('sws').innerHTML = [['nino', 'Internet de ' + NINO], ['cuid', 'Internet de ' + CUID]].map(function (x) {
+      return '<button class="sw" role="switch" aria-checked="' + NET.online[x[0]] + '" data-act="red" data-v="' + x[0] + '" data-testid="red-' + x[0] + '"><i aria-hidden="true"></i>' + x[1] + '</button>';
+    }).join('');
+    document.getElementById('log').innerHTML = S.log.map(function (l) { return '<li><time>' + l.h + '</time>' + esc(l.t) + '</li>'; }).join('');
+  }
+  // El tiempo corre aparte: solo se actualiza el anillo, sin repintar ni mover el foco.
+  function tic() {
+    if (++sec % 2) return; // 1 s real = 5 s simulados; se repinta el anillo cada 2 s
+    S.reloj += 10; var n = S.nino;
+    if (n.pantalla === 'dia' && !n.pausa && actual().pasos[n.idx]) { n.seg += 10; refrescaAnillo(); }
+    document.getElementById('reloj').textContent = hora(S.reloj);
+    document.querySelectorAll('.sb span:first-child').forEach(function (s) { s.textContent = hora(S.reloj); });
+  }
+  function refrescaAnillo() {
+    var n = S.nino, p = actual().pasos[n.idx], el = document.querySelector('#nino .ring'); if (!p || !el) return;
+    var tot = p.min * 60, C = 2 * Math.PI * 52, extra = n.seg > tot;
+    el.querySelector('.fg').setAttribute('stroke-dashoffset', (C * Math.min(1, n.seg / tot)).toFixed(1));
+    el.classList.toggle('extra', extra);
+    el.querySelector('[data-timer]').innerHTML = (extra ? 'Tómate tu tiempo' : 'Faltan ' + mins(tot - n.seg)) + (n.pausa ? '<br>(en pausa)' : '');
+  }
+
+  /* ---------- Acciones ---------- */
+  function leer() {
+    var x = contexto(), t = x.paso === 'Rutina terminada' ? '¡Terminaste tu rutina!' : 'Paso ' + x.n + ' de ' + x.total + ': ' + x.paso;
+    if (window.speechSynthesis && window.SpeechSynthesisUtterance) { var u = new SpeechSynthesisUtterance(t); u.lang = 'es-MX'; speechSynthesis.cancel(); speechSynthesis.speak(u); anota('Se lee en voz alta: «' + t + '».'); }
+    else anota('Este navegador no puede leer en voz alta.');
+  }
+  var A = {
+    leer: leer,
+    listo: function () {
+      var n = S.nino, r = actual(), p = r.pasos[n.idx]; if (!p) return;
+      n.idx++; n.seg = 0; n.pausa = false;
+      enviar('nino', { tipo: 'progreso', txt: p.pic + ' ' + p.txt + ' (' + r.nombre + ')', ctx: contexto() });
+      if (n.idx >= r.pasos.length) { enviar('nino', { tipo: 'progreso', txt: '🏁 Terminó la rutina de la ' + r.nombre.toLowerCase() }); anota(NINO + ' terminó la rutina de la ' + r.nombre.toLowerCase() + '.'); }
+      else anota(NINO + ' terminó «' + p.txt + '». Sigue: «' + r.pasos[n.idx].txt + '».');
+    },
+    pausa: function () { S.nino.pausa = !S.nino.pausa; },
+    otra: function () { var n = S.nino; n.activa = n.activa === 'man' ? 'tar' : 'man'; n.idx = 0; n.seg = 0; anota(NINO + ' empieza la rutina de la ' + actual().nombre.toLowerCase() + '.');
+      enviar('nino', { tipo: 'progreso', txt: '▶ Empezó la rutina de la ' + actual().nombre.toLowerCase(), ctx: contexto() }); },
+    ayuda: function () { avisar('ayuda'); },
+    sentir: function () { S.nino.pantalla = 'sentir'; },
+    emo: function (v) { avisar('sentir', +v); },
+    volver: function () { S.nino.pantalla = 'dia'; },
+    entendido: function () { var m = S.nino.entrantes.shift(); var it = S.cuid.cola.find(function (x) { return x.id === m.id; }); if (it) visto('nino', it); anota(NINO + ' marcó «Entendido».'); },
+    ir: function (v) { S.cuid.pantalla = v; if (v !== 'evento') S.cuid.sel = null; },
+    abrir: function (v) {
+      var c = S.cuid, e = c.eventos.find(function (x) { return x.id === v; }); c.sel = v; c.pantalla = 'evento'; c.notif = null;
+      if (e.estado === 'nuevo') { e.estado = 'visto'; visto('cuid', e.it); anota(CUID + ' abre el aviso y cae directo en el momento: ' + e.msg.ctx.rutina + ' › ' + e.msg.ctx.paso + '.'); }
+    },
+    responder: function (v) {
+      var c = S.cuid, e = c.eventos.find(function (x) { return x.id === c.sel; }), r = RESPUESTAS[+v];
+      e.resp.push(enviar('cuid', { tipo: 'respuesta', ref: e.id, pic: r[0], txt: r[1] })); e.estado = 'respondido';
+      c.hist.push({ h: S.reloj, k: 'm', t: 'Respondiste: ' + r[0] + ' ' + r[1] }); anota(CUID + ' responde «' + r[1] + '».');
+    },
+    atendido: function () { var c = S.cuid, e = c.eventos.find(function (x) { return x.id === c.sel; }); e.estado = 'atendido'; c.hist.push({ h: S.reloj, k: 'm', t: 'Marcaste como atendido: ' + titulo(e.msg) }); anota(CUID + ' marca el aviso como atendido.'); },
+    opc: function (v) { S.cuid.opc = +v; S.cuid.texto = ''; },
+    mandar: function () {
+      var c = S.cuid, todos = MENSAJES.map(function (m) { return [m[0], m[1], 'mensaje']; }).concat(RECONOCER.map(function (m) { return [m[0], m[1], 'reconocimiento']; })), m = todos[c.opc], txt = c.texto.trim() || m[1];
+      c.enviados.push(enviar('cuid', { tipo: m[2], pic: m[0], txt: txt })); c.hist.push({ h: S.reloj, k: 'm', t: 'Le mandaste: ' + m[0] + ' ' + txt }); c.texto = '';
+      anota(CUID + ' manda ' + (m[2] === 'reconocimiento' ? 'un reconocimiento' : 'un mensaje') + ': «' + txt + '».');
+    },
+    editar: function (v) { S.cuid.editar = v; },
+    mov: function (v) { var r = borrador(), a = v.split(':'), i = +a[0], j = i + +a[1], t = r.pasos[i]; r.pasos[i] = r.pasos[j]; r.pasos[j] = t; },
+    min: function (v) { var a = v.split(':'), p = borrador().pasos[+a[0]]; p.min = Math.max(1, Math.min(60, p.min + +a[1])); },
+    quitar: function (v) { borrador().pasos.splice(+v, 1); },
+    agregar: function (v) { var x = EXTRA[+v], r = borrador(); r.pasos.push({ id: r.id + 'x' + (++nId), pic: x[0], txt: x[1], min: 5 }); },
+    descartar: function () { var c = S.cuid; c.borrador = c.borrador.map(function (r) { return r.id === c.editar ? copia(c.rutinas.find(function (x) { return x.id === r.id; })) : r; }); },
+    'enviar-rutina': function () {
+      var c = S.cuid, r = copia(borrador());
+      c.rutinas = c.rutinas.map(function (x) { return x.id === r.id ? copia(r) : x; });
+      c.rutEnviada = enviar('cuid', { tipo: 'rutina', rutina: r }); c.enviados.push(c.rutEnviada);
+      c.hist.push({ h: S.reloj, k: 'm', t: 'Cambiaste la rutina de la ' + r.nombre.toLowerCase() }); anota(CUID + ' envía cambios a la rutina de la ' + r.nombre.toLowerCase() + '.');
+    },
+    avanzar: function () { S.reloj += 60; var n = S.nino; if (n.pantalla === 'dia' && !n.pausa && actual().pasos[n.idx]) n.seg += 60; anota('Pasa 1 minuto.'); },
+    red: function (v) {
+      NET.online[v] = !NET.online[v]; var q = v === 'nino' ? NINO : CUID;
+      anota(NET.online[v] ? q + ' recupera internet: sale lo que esperaba en su teléfono y le llega lo que esperaba en el servidor.' : q + ' se queda sin internet.');
+      if (NET.online[v]) { flush(v); entrega(v); }
+    },
+    reintento: function () {
+      var a = S.nino.cola.filter(function (it) { return it.msg.tipo === 'ayuda' || it.msg.tipo === 'sentir'; }).pop();
+      if (!a || a.estado === 'pendiente' || a.estado === 'saliendo') { anota('No hay un aviso ya enviado que reintentar.'); return; }
+      anota('Reintento: el teléfono de ' + NINO + ' vuelve a mandar el aviso ' + a.id + ' (como si no hubiera recibido confirmación).');
+      setTimeout(function () { NET.servidor.cuid.push(a); entrega('cuid'); }, NET.lat);
+    },
+    borrar: function () { if (window.speechSynthesis) speechSynthesis.cancel(); inicial(); anota('Se borraron todos los datos de las dos apps. No queda nada guardado.'); }
+  };
+  function borrador() { var c = S.cuid; return c.borrador.find(function (x) { return x.id === c.editar; }); }
+
+  document.addEventListener('click', function (ev) {
+    var b = ev.target.closest('[data-act]'); if (!b || b.disabled || !A[b.dataset.act]) return;
+    A[b.dataset.act](b.dataset.v); pinta();
+  });
+  document.addEventListener('input', function (ev) { if (ev.target.dataset.in === 'texto') S.cuid.texto = ev.target.value; });
+  document.getElementById('lat').addEventListener('change', function (ev) { NET.lat = +ev.target.value; anota('Latencia de la red: ' + ev.target.selectedOptions[0].textContent + '.'); pinta(); });
+  document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && S.nino.entrantes.length && document.getElementById('nino').contains(document.activeElement)) { A.entendido(); pinta(); } });
+
+  inicial();
+  anota('Arranque: ' + NINO + ' empieza la rutina de la mañana. ' + CUID + ' está en otra habitación.');
+  pinta();
+  setInterval(tic, 500);
+  window.__puente = { estado: function () { return S; }, red: function () { return NET; } }; // solo para las pruebas automatizadas
+})();
+</script>
+</body>
+</html>
