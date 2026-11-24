@@ -91,6 +91,8 @@ ol.pasos { margin: 0; padding-left: 22px; display: grid; gap: 6px; max-width: 70
 .ia > div:first-child, .verificable { grid-column: 1 / -1 }
 @media (max-width: 820px) { .ia { grid-template-columns: 1fr } }
 .flujo video { background: #0B1220 }
+.ia h3.bloque { grid-column: 1 / -1; margin: 14px 0 -4px; font-size: 20px }
+ol.sin-num { list-style: none; padding-left: 0 }
 .centro { background: var(--warn-soft); border-radius: 12px; padding: 10px 14px; margin: 0 0 14px }
 .verificable h3 { margin: 10px 0 4px }
 ul.enlaces { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px }
@@ -189,13 +191,14 @@ footer { margin: 64px 0 40px; color: var(--muted); font-size: 13px; border-top: 
   <section id="como-trabajo" class="ia" data-testid="como-trabajo" aria-labelledby="t-como">
     <div>
       <h2 id="t-como">How I work</h2>
-      <p class="intro">As a PO and QA, with AI agents. Two entry points, one cycle, and nothing moves forward without human approval.</p>
+      <p class="intro">Two cycles, one principle: nothing moves forward without human approval. First, as a PO and QA with AI agents; then, how I test.</p>
     </div>
+    <h3 class="bloque" id="t-po">As a PO and QA</h3>
     <figure class="video flujo">
-      <video id="video" data-testid="video" muted loop playsinline preload="metadata" poster="../ia/flujo-pro.png"
+      <video id="video" data-testid="video" muted loop playsinline preload="none" poster="../ia/flujo-pro.webp"
         aria-describedby="pasos" width="720" height="720">
         <source src="../ia/flujo-pro.mp4" type="video/mp4">
-        <img src="../ia/flujo-pro.png" alt="Diagram of the work cycle with AI agents; the sequence is described in text next to it.">
+        <img src="../ia/flujo-pro.webp" alt="Diagram of the work cycle with AI agents; the sequence is described in text next to it.">
       </video>
       <figcaption class="controles">
         <button id="pausa" data-testid="pausa" type="button" aria-pressed="false">Pause</button>
@@ -213,6 +216,31 @@ footer { margin: 64px 0 40px; color: var(--muted); font-size: 13px; border-top: 
         <li><b>Testing with evidence.</b> Every test leaves evidence; an improvement found comes back as a new story.</li>
         <li><b>Delivery.</b> With Jira and the stories up to date.</li>
         <li><b>Learning.</b> Every mistake becomes a rule, and the cycle starts again.</li>
+      </ol>
+    </div>
+    <h3 class="bloque" id="t-qa">How I test</h3>
+    <figure class="video flujo" data-testid="bloque-qa">
+      <video id="video-qa" data-testid="video-qa" muted loop playsinline preload="none" poster="../ia/flujo-qa-en.webp"
+        aria-describedby="pasos-qa" width="720" height="720">
+        <source src="../ia/flujo-qa-en.mp4" type="video/mp4">
+        <img src="../ia/flujo-qa-en.webp" alt="Diagram of the testing cycle in eight numbered steps; the sequence is described in text next to it.">
+      </video>
+      <figcaption class="controles">
+        <button id="pausa-qa" data-testid="pausa-qa" type="button" aria-pressed="false">Pause</button>
+        <span>28-second looping animation; the steps are numbered.</span>
+      </figcaption>
+    </figure>
+    <div class="pasos-caja">
+      <p class="centro" data-testid="centro-qa"><b>My review and approval at the center:</b> I decide the release. Nothing ships without evidence.</p>
+      <ol class="pasos sin-num" id="pasos-qa" data-testid="pasos-qa">
+        <li><b>1. Risk analysis.</b> What can fail and what I test first. The story with its acceptance criteria comes in here.</li>
+        <li><b>2. Test design.</b> With ISTQB techniques and BDD scenarios in Gherkin; I review the cases before running them.</li>
+        <li><b>3. Manual testing.</b> Exploratory, smoke and regression. Every new build comes in here.</li>
+        <li><b>4. Automation.</b> With Playwright, TypeScript and API tests: a stable manual case becomes a script.</li>
+        <li><b>5. CI gates.</b> The suite runs on every build and decides whether it passes.</li>
+        <li><b>6. Evidence and report.</b> Allure report with screenshots.</li>
+        <li><b>7. Defects.</b> In Jira, with steps to reproduce; if the defect comes from the criteria, the story is adjusted.</li>
+        <li><b>8. Regression grows.</b> Every defect leaves a new test, and the cycle goes back to risk analysis.</li>
       </ol>
     </div>
     <div class="verificable" data-testid="verificable">
@@ -268,14 +296,18 @@ footer { margin: 64px 0 40px; color: var(--muted); font-size: 13px; border-top: 
   <footer>This site loads no external resources.</footer>
 </main>
 <script>
-  // The video autoplays only if the visitor did not ask for reduced motion; the button pauses or resumes it.
-  const v = document.getElementById('video'), b = document.getElementById('pausa');
+  // Each animation plays on its own unless the visitor asked for reduced motion; its button pauses or resumes it.
+  // It only downloads and plays when it is near the screen, so it does not compete with the initial load.
   const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const pinta = () => { const p = v.paused; b.textContent = p ? 'Play' : 'Pause'; b.setAttribute('aria-pressed', String(p)); };
-  b.addEventListener('click', () => { if (v.paused) v.play(); else v.pause(); });
-  v.addEventListener('play', pinta); v.addEventListener('pause', pinta);
-  if (!quieto) v.play().catch(pinta);
-  pinta();
+  for (const f of document.querySelectorAll('figure.flujo')) {
+    const v = f.querySelector('video'), b = f.querySelector('button');
+    let quiere = !quieto, visible = false;
+    const pinta = () => { b.textContent = quiere ? 'Pause' : 'Play'; b.setAttribute('aria-pressed', String(!quiere)); };
+    const aplica = () => { if (quiere && visible) v.play().catch(() => { quiere = false; pinta(); }); else v.pause(); };
+    b.addEventListener('click', () => { quiere = !quiere; pinta(); aplica(); });
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; aplica(); }, { rootMargin: '200px' }).observe(v);
+    pinta();
+  }
 </script>
 </body>
 </html>
