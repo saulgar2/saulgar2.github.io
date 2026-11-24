@@ -99,6 +99,15 @@ ul.enlaces { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px }
 ul.enlaces li { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline }
 ul.enlaces span { color: var(--muted); font-size: 14.5px }
 .contacto-acts { display: flex; flex-wrap: wrap }
+ul.proyectos { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) }
+.proyecto { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px }
+.proyecto h3 { margin: 0 0 6px; font-size: 17px }
+.proyecto p { margin: 6px 0 0 }
+.estado { display: inline-block; font-size: 13.5px; font-weight: 700; border-radius: 999px; padding: 2px 10px; border: 1px solid }
+.estado.produccion { color: var(--accent); border-color: var(--accent) }
+.estado.parcial, .estado.real, .estado.personal { color: var(--ink); border-color: var(--muted) }
+.estado.pendiente, [data-pendiente] { font-style: italic }
+.areas { color: var(--muted); font-size: 14px }
 .correo { color: var(--muted); font-size: 14.5px; margin: 4px 0 0 }
 @media (max-width: 640px) {
   header.barra .envoltura { gap: 4px 12px; padding-top: 8px; padding-bottom: 6px }
@@ -118,7 +127,7 @@ footer { margin: 64px 0 40px; color: var(--muted); font-size: 13px; border-top: 
 <header class="barra"><div class="envoltura">
   <strong>Saúl García</strong>
   <nav aria-label="Secciones">
-    <a href="#servicios">Servicios</a><a href="#como-trabajo">Cómo trabajo</a><a href="#reclutadores">Reclutadores</a><a href="#cv">CV</a><a href="#contacto">Contacto</a>
+    <a href="#servicios">Servicios</a><a href="#como-trabajo">Cómo trabajo</a><a href="#proyectos">Proyectos</a><a href="#reclutadores">Reclutadores</a><a href="#cv">CV</a><a href="#contacto">Contacto</a>
   </nav>
   <a class="idioma" href="en/" hreflang="en" lang="en" data-testid="idioma">English</a>
 </div></header>
@@ -130,8 +139,9 @@ footer { margin: 64px 0 40px; color: var(--muted); font-size: 13px; border-top: 
       <p class="nombre" data-testid="nombre">Saúl García</p>
       <h1 id="t-portada">Pruebas que demuestran que tu producto hace lo que promete</h1>
       <p class="rol" data-testid="rol">QA Lead · QA Automation · Product Owner</p>
-      <p class="lead">14 años en calidad de software y producto. Automatizo pruebas web y de API, diseño casos con técnica, y uso
-        agentes de IA en QA con reglas, evidencia y aprobación humana en cada paso.</p>
+      <p class="lead">14 años en calidad de software y producto. Combino tres áreas: estrategia de pruebas y automatización web y
+        de API; producto, para entender necesidades y definir flujos; e implementación de soluciones con IA, con reglas,
+        evidencia y aprobación humana en cada paso.</p>
       <p class="disponible" data-testid="disponible">Disponible para freelance y empleo · remoto o CDMX</p>
       <div>
         <a class="boton" href="#contacto" data-testid="cta-contacto">Hablemos</a>
@@ -257,6 +267,51 @@ footer { margin: 64px 0 40px; color: var(--muted); font-size: 13px; border-top: 
           <span>proyecto de automatización</span></li>
       </ul>
     </div>
+  </section>
+
+  <section id="proyectos" data-testid="proyectos" aria-labelledby="t-proyectos">
+    <h2 id="t-proyectos">Proyectos</h2>
+    <p class="intro">Combino tres áreas: calidad de software y estrategia de pruebas; producto, para entender necesidades, definir
+      flujos y coordinar soluciones; e implementación de soluciones con IA. Cada proyecto dice en qué estado está:
+      prototipo, parcial, en uso personal, usado en trabajo real o en producción.</p>
+    <ul class="proyectos">
+      <li class="proyecto" data-testid="proyecto">
+        <h3>Framework de IA para QA</h3>
+        <p class="estado real" data-testid="estado">Usado en trabajo real</p>
+        <p>Proyecto propio: reconoce aplicaciones y flujos y genera pruebas automatizadas de UI. Se usó en trabajo real, en un equipo de IT que daba servicio a nueve productos con nueve desarrolladores, con resultados parciales; lo más difícil fueron las pruebas inestables cuando los flujos cambiaban.</p>
+        <p class="areas">QA · IA</p>
+      </li>
+      <li class="proyecto" data-testid="proyecto">
+        <h3>SCapture</h3>
+        <p class="estado personal" data-testid="estado">En uso personal</p>
+        <p>Herramienta de captura de pantalla. Proyecto propio, desarrollado con apoyo de IA.</p>
+        <p class="areas">IA</p>
+      </li>
+      <li class="proyecto" data-testid="proyecto">
+        <h3>Generador de códigos OTP</h3>
+        <p class="estado personal" data-testid="estado">En uso personal</p>
+        <p>Proyecto propio, desarrollado con apoyo de IA.</p>
+        <p class="areas">IA</p>
+      </li>
+      <li class="proyecto" data-testid="proyecto">
+        <h3>StudyHelper</h3>
+        <p class="estado parcial" data-testid="estado">Parcial · ~80 %</p>
+        <p>Proyecto propio, desarrollado con apoyo de IA.</p>
+        <p class="areas">IA</p>
+      </li>
+      <li class="proyecto" data-testid="proyecto">
+        <h3>SLector</h3>
+        <p class="estado parcial" data-testid="estado">Parcial · ~90 %</p>
+        <p>Proyecto propio, desarrollado con apoyo de IA, con alrededor del 90 % de su funcionalidad.</p>
+        <p class="areas">IA</p>
+      </li>
+      <li class="proyecto" data-testid="proyecto">
+        <h3>Este sitio</h3>
+        <p class="estado produccion" data-testid="estado">En producción</p>
+        <p>Publicado en GitHub Pages. Lo construí con agentes de IA bajo mi revisión, y cada cambio pasa por pruebas e2e, accesibilidad y Lighthouse.</p>
+        <p class="areas">QA · IA</p>
+      </li>
+    </ul>
   </section>
 
   <section id="reclutadores" data-testid="reclutadores" aria-labelledby="t-reclutadores">

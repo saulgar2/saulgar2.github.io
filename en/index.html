@@ -99,6 +99,15 @@ ul.enlaces { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px }
 ul.enlaces li { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline }
 ul.enlaces span { color: var(--muted); font-size: 14.5px }
 .contacto-acts { display: flex; flex-wrap: wrap }
+ul.proyectos { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) }
+.proyecto { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px }
+.proyecto h3 { margin: 0 0 6px; font-size: 17px }
+.proyecto p { margin: 6px 0 0 }
+.estado { display: inline-block; font-size: 13.5px; font-weight: 700; border-radius: 999px; padding: 2px 10px; border: 1px solid }
+.estado.produccion { color: var(--accent); border-color: var(--accent) }
+.estado.parcial, .estado.real, .estado.personal { color: var(--ink); border-color: var(--muted) }
+.estado.pendiente, [data-pendiente] { font-style: italic }
+.areas { color: var(--muted); font-size: 14px }
 .correo { color: var(--muted); font-size: 14.5px; margin: 4px 0 0 }
 @media (max-width: 640px) {
   header.barra .envoltura { gap: 4px 12px; padding-top: 8px; padding-bottom: 6px }
@@ -118,7 +127,7 @@ footer { margin: 64px 0 40px; color: var(--muted); font-size: 13px; border-top: 
 <header class="barra"><div class="envoltura">
   <strong>Saúl García</strong>
   <nav aria-label="Sections">
-    <a href="#servicios">Services</a><a href="#como-trabajo">How I work</a><a href="#reclutadores">Recruiters</a><a href="#cv">CV</a><a href="#contacto">Contact</a>
+    <a href="#servicios">Services</a><a href="#como-trabajo">How I work</a><a href="#proyectos">Projects</a><a href="#reclutadores">Recruiters</a><a href="#cv">CV</a><a href="#contacto">Contact</a>
   </nav>
   <a class="idioma" href="../" hreflang="es" lang="es" data-testid="idioma">Español</a>
 </div></header>
@@ -130,8 +139,9 @@ footer { margin: 64px 0 40px; color: var(--muted); font-size: 13px; border-top: 
       <p class="nombre" data-testid="nombre">Saúl García</p>
       <h1 id="t-portada">Tests that prove your product does what it promises</h1>
       <p class="rol" data-testid="rol">QA Lead · QA Automation · Product Owner</p>
-      <p class="lead">14 years in software quality and product. I automate web and API tests, design test cases with proven techniques, and use
-        AI agents in QA with rules, evidence and human approval at every step.</p>
+      <p class="lead">14 years in software quality and product. I combine three areas: test strategy and web and API
+        automation; product, to understand needs and define flows; and building AI-assisted solutions, with rules,
+        evidence and human approval at every step.</p>
       <p class="disponible" data-testid="disponible">Available for freelance and full-time · remote or Mexico City</p>
       <div>
         <a class="boton" href="#contacto" data-testid="cta-contacto">Let's talk</a>
@@ -257,6 +267,51 @@ footer { margin: 64px 0 40px; color: var(--muted); font-size: 13px; border-top: 
           <span>automation project</span></li>
       </ul>
     </div>
+  </section>
+
+  <section id="proyectos" data-testid="proyectos" aria-labelledby="t-proyectos">
+    <h2 id="t-proyectos">Projects</h2>
+    <p class="intro">I combine three areas: software quality and test strategy; product, to understand needs, define flows and
+      coordinate solutions; and building AI-assisted solutions. Each project states where it stands: prototype,
+      partial, in personal use, used in real work or in production.</p>
+    <ul class="proyectos">
+      <li class="proyecto" data-testid="proyecto">
+        <h3>AI framework for QA</h3>
+        <p class="estado real" data-testid="estado">Used in real work</p>
+        <p>My own project: it recognizes applications and flows and generates automated UI tests. It was used in real work, in an IT team that served nine products with nine developers, with partial results; the hardest part was flaky tests when the flows kept changing.</p>
+        <p class="areas">QA · AI</p>
+      </li>
+      <li class="proyecto" data-testid="proyecto">
+        <h3>SCapture</h3>
+        <p class="estado personal" data-testid="estado">In personal use</p>
+        <p>A screen capture tool. My own project, built with AI assistance.</p>
+        <p class="areas">AI</p>
+      </li>
+      <li class="proyecto" data-testid="proyecto">
+        <h3>OTP code generator</h3>
+        <p class="estado personal" data-testid="estado">In personal use</p>
+        <p>My own project, built with AI assistance.</p>
+        <p class="areas">AI</p>
+      </li>
+      <li class="proyecto" data-testid="proyecto">
+        <h3>StudyHelper</h3>
+        <p class="estado parcial" data-testid="estado">Partial · ~80%</p>
+        <p>My own project, built with AI assistance.</p>
+        <p class="areas">AI</p>
+      </li>
+      <li class="proyecto" data-testid="proyecto">
+        <h3>SLector</h3>
+        <p class="estado parcial" data-testid="estado">Partial · ~90%</p>
+        <p>My own project, built with AI assistance, with about 90% of its functionality.</p>
+        <p class="areas">AI</p>
+      </li>
+      <li class="proyecto" data-testid="proyecto">
+        <h3>This site</h3>
+        <p class="estado produccion" data-testid="estado">In production</p>
+        <p>Published on GitHub Pages. I built it with AI agents under my review, and every change goes through e2e tests, accessibility checks and Lighthouse.</p>
+        <p class="areas">QA · AI</p>
+      </li>
+    </ul>
   </section>
 
   <section id="reclutadores" data-testid="reclutadores" aria-labelledby="t-reclutadores">
